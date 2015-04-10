@@ -1,0 +1,49 @@
+<ion-view title="EditProfile">
+<ion-header-bar class="bar-dark" align-title="center" class="bar-positive">
+            <h1 class="title">Edit Profile</h1>
+
+        </ion-header-bar>
+     <ion-content>
+       
+      <div class="list" ng-controller="EditDetailsCtrl">
+	  
+        <center>
+		<h1>Details</h1> 
+		<img src="img/tempo_logo.jpg"></img>
+        <label class="item item-input">
+        <span  class="input-label" >Email Address</span>
+        <input type="email" placeholder="Email" ng-model = "email">
+        </label>
+        <label class="item item-input">
+        <span  class="input-label" >Phone number</span>
+        <input type="tel" placeholder="Telephone Number" ng-model = "telephoneNumber">
+        </label>
+		<label class = "item item-input item-select">
+		<span  class="input-label" >Select Country</span>
+		 <select ng-model="country" ng-init="country=countries[0]" ng-options="country.name for country in countries"></select>
+		</label>
+		
+		<button class ="button button-royal" ng-click="createAccountCtrl.createAccount()">
+            Modify Details
+        </button>
+		
+		
+		<br / > <br /> <br />
+		<h1>Change Password</h1>
+		<label class="item item-input">
+        <span  class="input-label" >Password</span>
+        <input type="password" placeholder="password" ng-model = "password">
+        </label>
+		<label class="item item-input">
+        <span  class="input-label" >Confirm Password</span>
+        <input type="password" placeholder="Confirm Password" ng-model = "confirmPassword">
+        </label>
+		
+      <button class ="button button-royal" ng-click="createAccountCtrl.createAccount()">
+            Change Password
+        </button>
+		
+		  </center>
+      </div>
+    </ion-content>
+	</ion-view>

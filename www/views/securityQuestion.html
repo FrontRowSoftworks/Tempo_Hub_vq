@@ -1,0 +1,24 @@
+<ion-view Title ="SecurityQuestion">
+<ion-header-bar class="bar-dark" align-title="center" class="bar-positive">
+            <h1 class="title">Security Question</h1>
+
+        </ion-header-bar>
+     <ion-content>
+       
+      <div class="list" ng-controller="SecurityQuestionCtrl">
+	  
+        <center>
+		<img src="img/tempo_logo.jpg"></img>
+        
+        <p>{{question}}</p>
+		<label class="item item-input">
+        <span  class="input-label" >Answer</span>
+        <input type = "text" placeholder="Answer" ng-model = "answer">
+        </label>
+		<button class ="button button-block button-royal" ng-click ="securityQuestionCtrl.answer()">Answer</button>
+		<a class ="button button-block button-royal" ui-sref ="login">back to login</a>
+		
+		  </center>
+      </div>
+    </ion-content>
+	</ion-view>
