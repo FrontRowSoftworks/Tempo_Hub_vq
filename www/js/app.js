@@ -95,7 +95,7 @@ app.controller('Controller', ['$scope', '$ionicPopup', '$state', function($scope
       };
     
         $scope.controller.login = function() {
-    console.log("Username: " + $scope.email +  "Passowrd: " + $scope.password);
+    console.log("Username: " + $scope.email +  "Password: " + $scope.password);
   };
     
 }]);
