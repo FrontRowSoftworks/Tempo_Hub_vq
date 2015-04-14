@@ -1,0 +1,42 @@
+<ion-view title="Edit Details">
+     <ion-content>
+        <div class="list" ng-controller="EditDetailsCtrl">
+            <center>
+                <!--<h1>Details</h1>-->
+                <img src="img/tempo_logo.jpg">
+                <br><br>
+                <label class="item item-input">
+                    <input type="email" placeholder="email" ng-model = "email">
+                </label>
+                <label class="item item-input">
+                    <input type="tel" placeholder="mobile number" ng-model = "mobileNumber">
+                </label>
+		        <label class = "item item-input item-select">
+		            <select ng-model="country" ng-init="country=countries[0]" ng-options="country.name for country in countries"></select>
+		        </label>
+		
+
+                <button class ="button button-positive" ng-click="signUpCtrl.signUp()">
+                    Change Details
+                </button>
+
+
+                <br><br>
+		        <!--<h1>Change Password</h1>-->
+                <label class="item item-input">
+                    <input type="password" placeholder="current password" ng-model = "currentPassword">
+                </label>
+                <label class="item item-input">
+                    <input type="password" placeholder="new password" ng-model = "newPassword">
+                </label>
+		        <label class="item item-input">
+                    <input type="password" placeholder="confirm password" ng-model = "confirmPassword">
+                </label>
+
+                <button class ="button button-positive" ng-click="signUpCtrl.signUp()">
+                    Change Password
+                </button>
+		  </center>
+      </div>
+    </ion-content>
+</ion-view>

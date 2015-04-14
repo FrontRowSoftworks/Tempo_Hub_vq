@@ -1,0 +1,36 @@
+<ion-view title ="Sign Up">
+ <ion-content>
+      <div class="list" ng-controller="SignUpCtrl">
+          <center>
+              <img src="img/tempo_logo.jpg">
+              <br><br>
+              <label class="item item-input">
+                  <input type="email" placeholder="email" ng-model = "email">
+              </label>
+              <label class="item item-input">
+                  <input type="tel" placeholder="mobile number" ng-model = "mobileNumber">
+              </label>
+              <label class = "item item-input">
+                  <select ng-model="country" ng-init="country=countries[0]" ng-options="country.name for country in countries"></select>
+              </label>
+              <label class="item item-input">
+                  <input type="text" placeholder="security question" ng-model = "question">
+              </label>
+              <label class="item item-input">
+                  <input type="password" placeholder="answer" ng-model = "answer">
+              </label>
+              <label class="item item-input">
+                  <input type="password" placeholder="password" ng-model = "password">
+              </label>
+              <input type="password" placeholder="confirm password" ng-model = "confirmPassword">
+              </label>
+
+              <button class ="button button-block button-positive" ng-click="signUpCtrl.signUp()">
+                  Sign Up
+              </button>
+
+              <a class="button button-block button-positive" ui-sref="SignIn">Back</a>
+          </center>
+      </div>
+    </ion-content>
+</ion-view>

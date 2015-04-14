@@ -1,0 +1,26 @@
+<ion-view title = "Sign In">
+    <ion-content>
+        <div class="list" ng-controller="Controller">
+            <center>
+		        <img src="img/tempo_logo.jpg">
+                <br><br>
+                <label class="item item-input">
+                    <input type="email" placeholder="email" ng-model = "email">
+                </label>
+                <label class="item item-input">
+                    <input type="password" placeholder="password" ng-model = "password">
+                </label>
+        
+                <button class ="button button-block button-positive" ng-click="controller.signIn()">
+                    Sign In
+                </button>
+
+                <a class ="button button-block button-positive" ui-sref="SignUp">Sign Up</a>
+
+		         <button class = "button button-block button-positive" ng-click="controller.forgotPassword(user)">
+                     Forgot Password?
+                 </button>
+		    </center>
+      </div>
+    </ion-content>
+</ion-view>
