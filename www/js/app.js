@@ -59,29 +59,9 @@ app.controller('SignInCtrl', ['$scope', '$http', function($scope, $http) {
 
     };
 
-    $http.post('localhost/dbtest.php"', { email: '$scope.email', pw: '$scope.password' }).success(function(response) {
-        console.log("elli is the bomb, " + $scope.email + "logged in");
+    $http.post('http://localhost/dbtest.php', { email: '$scope.email', pw: '$scope.password' }).success(function(response) {
+        console.log("login response: " + response);
     });
-
-    /*
-    var request = $http({
-        method: "post",
-        url: "localhost/dbtest.php",
-        data: {
-            email: $scope.email,
-            pw: $scope.password
-        },
-        headers: { 'Content-Type': 'application/json' }
-    });
-
-    request.success(function (data) {
-        console.log("elli is the bomb, " + $scope.email + "logged in")
-    })
-        .error(function(data){
-            alert("error");
-        });
-        */
-
 }]);
 
 app.controller('ForgotPasswordCtrl', ['$scope', '$state', function($scope, $state){
