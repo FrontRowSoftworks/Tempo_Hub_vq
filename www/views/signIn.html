@@ -4,19 +4,19 @@
             <center>
 		        <img src="img/tempo_logo.jpg">
                 <br><br>
+                <div ng-controller="SignInCtrl">
                 <label class="item item-input">
                     <input type="email" placeholder="email" ng-model = "email">
                 </label>
                 <label class="item item-input">
-                    <input type="password" placeholder="password" ng-model = "password">
+                    <input type="password" placeholder="password" ng-model = "pw">
                 </label>
 
-                <div ng-controller="SignInCtrl">
+
                 <button class ="button button-block button-positive" ng-click="signInCtrl.signIn()">
                     Sign In
                 </button>
                 </div>
-                <!--<a class="button button-block button-positive" ng-controller="SignInCtrl" ng-click="signIn()">Sign In</a>
 
                 <a class ="button button-block button-positive" ui-sref="SignUp">Sign Up</a>
 

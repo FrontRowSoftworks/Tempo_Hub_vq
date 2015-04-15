@@ -51,14 +51,15 @@ app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', functi
 }]);
 
 app.controller('SignInCtrl', ['$scope', '$http', function($scope, $http) {
-    console.log("Welcome To the signin state!");
+    console.log("Welcome to the SignIn state!");
     $scope.signInCtrl = {};
-    $scope.signInCtrl.signIn = function() {
-        console.log("Username: " + $scope.email +  ", I should not log passwords but here it is: " + $scope.password);
-        $http.post('http://localhost/dbtest.php', { email: '$scope.email', pw: '$scope.password' }).success(function(response) {
-            console.log("login response: " + response);
-        });
 
+    $scope.signInCtrl.signIn = function() {
+        $http.post('http://localhost/dbtest.php', { 'email': $scope.email, 'pw': $scope.pw}).success(function(response) {
+            console.log("login response: " + response);
+            if (response == 1) alert ("logged in!");
+            else alert ("email/password combination incorrect");
+        });
     };
 
 
