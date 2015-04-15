@@ -54,14 +54,14 @@ app.controller('SignInCtrl', ['$scope', '$http', function($scope, $http) {
     console.log("Welcome To the signin state!");
     $scope.signInCtrl = {};
     $scope.signInCtrl.signIn = function() {
-        console.log("We're in the signin controller now.");
         console.log("Username: " + $scope.email +  ", I should not log passwords but here it is: " + $scope.password);
+        $http.post('http://localhost/dbtest.php', { email: '$scope.email', pw: '$scope.password' }).success(function(response) {
+            console.log("login response: " + response);
+        });
 
     };
 
-    $http.post('http://localhost/dbtest.php', { email: '$scope.email', pw: '$scope.password' }).success(function(response) {
-        console.log("login response: " + response);
-    });
+
 }]);
 
 app.controller('ForgotPasswordCtrl', ['$scope', '$state', function($scope, $state){
