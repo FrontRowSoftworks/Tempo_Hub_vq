@@ -41,17 +41,47 @@ app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/signIn.html');
     });
 
-app.controller('Controller', ['$scope', '$ionicPopup', '$state', function($scope, $location, $state, $ionicPopup, $timeout){
+app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', function($scope, $location, $state, $ionicPopup, $timeout, $http){
     $scope.controller ={};
     $scope.controller.forgotPassword = function() {
         console.log("forgotPassword() Called");
         $state.go('ForgotPassword');
     };
-
-    $scope.controller.signIn = function() {
-        console.log("Username: " + $scope.email +  ", I should not log passwords but here it is: " + $scope.password);
-    };
     
+}]);
+
+app.controller('SignInCtrl', ['$scope', '$http', function($scope, $http) {
+    console.log("Welcome To the signin state!");
+    $scope.signInCtrl = {};
+    $scope.signInCtrl.signIn = function() {
+        console.log("We're in the signin controller now.");
+        console.log("Username: " + $scope.email +  ", I should not log passwords but here it is: " + $scope.password);
+
+    };
+
+    $http.post('localhost/dbtest.php"', { email: '$scope.email', pw: '$scope.password' }).success(function(response) {
+        console.log("elli is the bomb, " + $scope.email + "logged in");
+    });
+
+    /*
+    var request = $http({
+        method: "post",
+        url: "localhost/dbtest.php",
+        data: {
+            email: $scope.email,
+            pw: $scope.password
+        },
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    request.success(function (data) {
+        console.log("elli is the bomb, " + $scope.email + "logged in")
+    })
+        .error(function(data){
+            alert("error");
+        });
+        */
+
 }]);
 
 app.controller('ForgotPasswordCtrl', ['$scope', '$state', function($scope, $state){

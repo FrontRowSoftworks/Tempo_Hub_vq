@@ -10,14 +10,17 @@
                 <label class="item item-input">
                     <input type="password" placeholder="password" ng-model = "password">
                 </label>
-        
-                <button class ="button button-block button-positive" ng-click="controller.signIn()">
+
+                <div ng-controller="SignInCtrl">
+                <button class ="button button-block button-positive" ng-click="signInCtrl.signIn()">
                     Sign In
                 </button>
+                </div>
+                <!--<a class="button button-block button-positive" ng-controller="SignInCtrl" ng-click="signIn()">Sign In</a>
 
                 <a class ="button button-block button-positive" ui-sref="SignUp">Sign Up</a>
 
-		         <button class = "button button-block button-positive" ng-click="controller.forgotPassword(user)">
+		         <button class = "button button-block button-positive" ng-click="controller.forgotPassword()">
                      Forgot Password?
                  </button>
 		    </center>

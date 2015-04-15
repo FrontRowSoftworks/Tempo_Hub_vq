@@ -41,7 +41,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/signIn.html');
     });
 
-app.controller('Controller', ['$scope', '$ionicPopup', '$state', function($scope, $location, $state, $ionicPopup, $timeout){
+app.controller('Controller', ['$scope', '$ionicPopup', '$state', function($scope, $location, $state, $ionicPopup, $timeout, $http){
     $scope.controller ={};
     $scope.controller.forgotPassword = function() {
         console.log("forgotPassword() Called");
@@ -50,6 +50,20 @@ app.controller('Controller', ['$scope', '$ionicPopup', '$state', function($scope
 
     $scope.controller.signIn = function() {
         console.log("Username: " + $scope.email +  ", I should not log passwords but here it is: " + $scope.password);
+
+        var request = $http({
+            method: "post",
+            url: "localhost/dbtest.php",
+            data: {
+                email: $scope.email,
+                pw: $scope.password
+            },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
+
+        request.success(function (data) {
+            console.log("elli is the bomb, " + $scope.email + "logged in")
+        });
     };
     
 }]);
