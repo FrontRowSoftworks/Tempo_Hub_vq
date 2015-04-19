@@ -2,6 +2,7 @@
      <ion-content>
          <div class="list" ng-controller="SecurityQuestionCtrl">
              <center>
+                 <br>
                  <img src="img/tempo_logo.jpg">
                  <br><br>
                  <p>{{question}}</p>
@@ -10,10 +11,10 @@
                 </label>
 
                  <button class ="button button-block button-positive" ng-click ="securityQuestionCtrl.answer()">
-                     Answer
+                     Reset Password
                  </button>
 
-                 <a class ="button button-block button-positive" ui-sref ="SignUp">Back</a>
+                 <a class ="button button-block button-positive" ui-sref ="SignIn">Back</a>
 		  </center>
       </div>
     </ion-content>

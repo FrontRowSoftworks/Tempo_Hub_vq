@@ -17,7 +17,7 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', function($scope, $http
   $scope.signInCtrl.signIn = function() {
     $state.go('mainMenu.mainPage');
 
-    $http.post('http://localhost/dbtest.php', { 'email': $scope.email, 'pw': $scope.pw}).success(function(response) {
+    $http.post('http://localhost/SignIn.php', { 'email': $scope.email, 'pw': $scope.pw}).success(function(response) {
       console.log("login response: " + response);
       if (response == 1) alert("logged in!");
       else alert ("email/password combination incorrect");
@@ -26,26 +26,48 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', function($scope, $http
 
 }]);
 
-app.controller('ForgotPasswordCtrl', ['$scope', '$state', function($scope, $state){
-
-  console.log("Welcome To the forgot Password state!");
+app.controller('ForgotPasswordCtrl', ['$scope', '$state', '$http', 'UserQuestion', function($scope, $state, $http, UserQuestion){
+  console.log(UserQuestion.question);
+  console.log("Welcome to the forgot Password state!");
   $scope.forgotPasswordCtrl = {};
-  $scope.forgotPasswordCtrl.resetPassword = function(){
-    if($scope.email != undefined){
-      $state.go('SecurityQuestion');
+  $scope.forgotPasswordCtrl.getQuestion = function() {
+    if ($scope.email != undefined) {
+      $http.post('http://localhost/GetSecurityQuestion.php', { 'email': $scope.email}).success(function(response) {
+        if(response.length > 0){
+          console.log('service response: ' + response);
+          UserQuestion.question = response;
+          UserQuestion.email = $scope.email;
+          console.log('question is: ' + UserQuestion.question);
+          $state.go('SecurityQuestion');
+        }
+        else
+          alert("No account found for that email!");
+      });
+    } else {
+      alert("Enter a valid email!")
     }
-    else
-      console.log("Enter a valid email.");
-  };
 
+  };
 }]);
 
-app.controller('SecurityQuestionCtrl',['$scope', function($scope){
+app.controller('SecurityQuestionCtrl',['$state', '$scope', 'UserQuestion', '$http', function($state,$scope, UserQuestion, $http){
   $scope.securityQuestionCtrl = {};
+  $scope.question = UserQuestion.question;
   $scope.securityQuestionCtrl.answer = function(){
-    console.log("Your answer was " + $scope.answer);
+    if ($scope.answer != undefined) {
+      console.log("Your answer was " + $scope.answer);
+      console.log("stored email is: " + UserQuestion.email);
+
+      $http.post('http://localhost/ResetPassword.php', { 'email': UserQuestion.email, 'answer': $scope.answer}).success(function(response) {
+        console.log("reset service response: " + response);
+        if (response == 1) alert("password reset (not really yet)");
+        else alert ("answer is incorrect");
+      });
+    } else {
+      console.log("no answer entered");
+    }
   };
-  $scope.question = "What was the name of your first pet?";
+
 }]);
 
 app.controller('clipsCtrl', ['$scope', '$state', function($scope, $state){
@@ -122,16 +144,47 @@ app.controller('EditDetailsCtrl', ['$scope', function ($scope){
 
 
 
-app.controller('SignUpCtrl', ['$scope', function($scope) {
+app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $http, $state) {
 
   $scope.signUpCtrl = {};
   $scope.signUpCtrl.signUp = function() {
-    if($scope.password == $scope.confirmPassword && $scope.email != undefined && $scope.mobileNumber != undefined && $scope){
-      console.log("hi!");
-    };
+    if (true) {//$scope.password == $scope.confirmPassword && $scope.email != undefined && $scope.mobileNumber != undefined){
+      console.log("Trying to log in now!" + " You have chosen " + $scope.marketingOptIn);
+      $scope.marketingOptIn = $scope.marketingOptIn ? 1 : 0;
+
+
+      console.log($scope.email + ' ' + $scope.password + ' ' + $scope.mobileNumber + ' ' + $scope.mobileNumber + ' ' +
+      $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + 'nodeviceyet')
+
+      console.log($scope.marketingOptIn);
+      $http.post('http://localhost/SignUp.php', {
+        'email': $scope.email,
+        'pw': $scope.password,
+        'mobileNumber': $scope.mobileNumber,
+        'question': $scope.question,
+        'answer': $scope.answer,
+        'country': $scope.country.name,
+        'marketingOptIn': $scope.marketingOptIn,
+        'device': $scope.device
+      })
+          .success(function (response) {
+            if (response == 1) {
+              console.log(response);
+              alert("Account Creation Successful");
+              $state.go('SignIn');
+            }
+            else {
+              console.log(response);
+              alert("Account Creation Failed");
+            }
+          }
+      )
+    }
+    ;
   };
 
-  $scope.countries = [ {name: "country"}, {name: "United States"}, {name: "Israel"}, {name: "Afghanistan"}, {name: "Albania"}, {name: "Algeria"},
+
+    $scope.countries = [ {name: "country"}, {name: "United States"}, {name: "Israel"}, {name: "Afghanistan"}, {name: "Albania"}, {name: "Algeria"},
     { name: "AmericanSamoa"}, {name: "Andorra"}, {name: "Angola"}, {name: "Anguilla"}, {name: "Antigua and Barbuda"}, {name: "Argentina"},
     {name: "Armenia"}, {name: "Aruba"}, {name: "Australia"}, {name: "Austria"}, {name: "Azerbaijan"}, {name: "Bahamas"}, {name: "Bahrain"},
     {name: "Bangladesh"}, {name: "Barbados"}, {name: "Belarus"}, {name: "Belgium"}, {name: "Belize"}, {name: "Benin"}, {name: "Bermuda"},

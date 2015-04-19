@@ -89,3 +89,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
     $urlRouterProvider.otherwise('/signIn');
     });
+app.service("UserQuestion", function UserQuestion(){
+    var UserQuestion = this
+    UserQuestion.question="Default";
+    UserQuestion.email = "Default";
+});

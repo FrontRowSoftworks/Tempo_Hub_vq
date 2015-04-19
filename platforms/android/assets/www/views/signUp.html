@@ -2,6 +2,7 @@
  <ion-content>
       <div class="list" ng-controller="SignUpCtrl">
           <center>
+              <br>
               <img src="img/tempo_logo.jpg">
               <br><br>
               <label class="item item-input">
@@ -22,9 +23,14 @@
               <label class="item item-input">
                   <input type="password" placeholder="password" ng-model = "password">
               </label>
+              <label class="item item-input">
               <input type="password" placeholder="confirm password" ng-model = "confirmPassword">
               </label>
-
+              </center>
+                  <ion-checkbox ng-model="marketingOptIn">
+                      <center>Receive promotional materials<br> from TEMPO?</center>
+                  </ion-checkbox>
+              <center>
               <button class ="button button-block button-positive" ng-click="signUpCtrl.signUp()">
                   Sign Up
               </button>
