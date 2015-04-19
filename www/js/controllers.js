@@ -31,6 +31,48 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', function($scope, $http
 
 }]);
 
+app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $http, $state) {
+
+  $scope.signUpCtrl = {};
+  $scope.signUpCtrl.signUp = function() {
+
+    if (true) {//$scope.password == $scope.confirmPassword && $scope.email != undefined && $scope.mobileNumber != undefined){
+      console.log("Trying to log in now!" + " You have chosen " + $scope.marketingOptIn);
+      $scope.marketingOptIn = $scope.marketingOptIn ==  undefined || $scope.marketingOptIn == 0 ? 0 : 1;
+
+
+      console.log($scope.email + ' ' + $scope.password + ' ' + $scope.mobileNumber + ' ' + $scope.mobileNumber + ' ' +
+      $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + 'nodeviceyet')
+
+      console.log($scope.marketingOptIn);
+      $http.post('http://localhost/HubServices/SignUp.php', {
+        'email': $scope.email,
+        'pw': $scope.password,
+        'mobileNumber': $scope.mobileNumber,
+        'question': $scope.question,
+        'answer': $scope.answer,
+        'country': $scope.country.name,
+        'marketingOptIn': $scope.marketingOptIn,
+        'device': $scope.device
+      })
+          .success(function (response) {
+            if (response == 1) {
+              console.log(response);
+              alert("Account Creation Successful");
+              $state.go('SignIn');
+            }
+            else {
+              console.log(response);
+              alert("Account Creation Failed");
+            }
+          }
+      )
+    }
+    ;
+  };
+  $scope.countries = countries;
+}]);
+
 app.controller('ForgotPasswordCtrl', ['$scope', '$state', '$http', 'UserQuestion', function($scope, $state, $http, UserQuestion){
   console.log(UserQuestion.question);
   console.log("Welcome to the forgot Password state!");
@@ -134,48 +176,6 @@ app.controller('EditDetailsCtrl', ['$scope', function ($scope){
   $scope.countries = countries;
 }]);
 
-
-
-app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $http, $state) {
-
-  $scope.signUpCtrl = {};
-  $scope.signUpCtrl.signUp = function() {
-    if (true) {//$scope.password == $scope.confirmPassword && $scope.email != undefined && $scope.mobileNumber != undefined){
-      console.log("Trying to log in now!" + " You have chosen " + $scope.marketingOptIn);
-      $scope.marketingOptIn = $scope.marketingOptIn ? 1 : 0;
-
-
-      console.log($scope.email + ' ' + $scope.password + ' ' + $scope.mobileNumber + ' ' + $scope.mobileNumber + ' ' +
-      $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + 'nodeviceyet')
-
-      console.log($scope.marketingOptIn);
-      $http.post('http://localhost/HubServices/SignUp.php', {
-        'email': $scope.email,
-        'pw': $scope.password,
-        'mobileNumber': $scope.mobileNumber,
-        'question': $scope.question,
-        'answer': $scope.answer,
-        'country': $scope.country.name,
-        'marketingOptIn': $scope.marketingOptIn,
-        'device': $scope.device
-      })
-          .success(function (response) {
-            if (response == 1) {
-              console.log(response);
-              alert("Account Creation Successful");
-              $state.go('SignIn');
-            }
-            else {
-              console.log(response);
-              alert("Account Creation Failed");
-            }
-          }
-      )
-    }
-    ;
-  };
-    $scope.countries = countries;
-}]);
 
 var countries = [ {name: "country"}, {name: "United States"}, {name: "Israel"}, {name: "Afghanistan"}, {name: "Albania"}, {name: "Algeria"},
   { name: "AmericanSamoa"}, {name: "Andorra"}, {name: "Angola"}, {name: "Anguilla"}, {name: "Antigua and Barbuda"}, {name: "Argentina"},
