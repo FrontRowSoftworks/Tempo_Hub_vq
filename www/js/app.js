@@ -33,6 +33,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 url: '/securityQuestion',
                 templateUrl: 'views/securityQuestion.html'
             })
+            .state('ResetPassword', {
+                url: '/resetPassword',
+                templateUrl: 'views/resetPassword.html'
+            })
             .state('EditDetails', {
                 url: '/EditDetails',
                 templateUrl: 'views/editDetails.html'
@@ -90,7 +94,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/signIn');
     });
 app.service("UserQuestion", function UserQuestion(){
-    var UserQuestion = this
+    var UserQuestion = this;
     UserQuestion.question="Default";
     UserQuestion.email = "Default";
+
+    var reset = function () {
+        UserQuestion.question = "Default";
+        UserQuestion.email = "Default";
+    }
 });
