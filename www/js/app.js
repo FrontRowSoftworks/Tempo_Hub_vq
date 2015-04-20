@@ -37,10 +37,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 url: '/resetPassword',
                 templateUrl: 'views/resetPassword.html'
             })
-            .state('EditDetails', {
-                url: '/EditDetails',
-                templateUrl: 'views/editDetails.html'
-            })
+
             .state('mainMenu', {
                 url: '/mainMenu',
                 abstract: true,
@@ -53,6 +50,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
                         templateUrl: "views/mainPage.html"
                     }
                 }
+            })
+            .state('mainMenu.editDetails', {
+                url: '/editDetails',
+                templateUrl: 'views/editDetails.html'
             })
             .state('mainMenu.info', {
                 url: "/info",

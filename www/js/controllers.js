@@ -171,8 +171,6 @@ app.controller('previousCtrl', function($scope){
 
 app.controller('EditDetailsCtrl', ['$scope', function ($scope){
   $scope.editDetailsCtrl = {};
-
-  //these countries should be declared somewhere and referenced both times rather than this
   $scope.countries = countries;
 }]);
 
