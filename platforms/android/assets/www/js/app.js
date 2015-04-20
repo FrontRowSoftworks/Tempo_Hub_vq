@@ -33,10 +33,11 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 url: '/securityQuestion',
                 templateUrl: 'views/securityQuestion.html'
             })
-            .state('EditDetails', {
-                url: '/EditDetails',
-                templateUrl: 'views/editDetails.html'
+            .state('ResetPassword', {
+                url: '/resetPassword',
+                templateUrl: 'views/resetPassword.html'
             })
+
             .state('mainMenu', {
                 url: '/mainMenu',
                 abstract: true,
@@ -50,6 +51,15 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 }
             })
+            .state('mainMenu.editDetails', {
+                url: '/editDetails',
+                views: {
+                    'menuContent': {
+                        templateUrl: "views/editDetails.html"
+                    }
+                }
+            })
+			
             .state('mainMenu.info', {
                 url: "/info",
                 views: {
@@ -89,3 +99,26 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
     $urlRouterProvider.otherwise('/signIn');
     });
+app.service("UserQuestion", function UserQuestion(){
+    var UserQuestion = this;
+    UserQuestion.question="Default";
+    UserQuestion.email = "Default";
+
+    var reset = function () {
+        UserQuestion.question = "Default";
+        UserQuestion.email = "Default";
+    }
+});
+app.service("UserDetails", function UserDetails(){
+    var UserDetils = this;
+    UserDetails.email="Default";
+	UserDetails.mobileNumber="Default";
+	UserDetails.country="Default";
+	
+    var reset = function () {
+		UserDetails.email="Default";
+		UserDetails.mobileNumber="Default";
+		UserDetails.country="Default";
+	
+    }
+});

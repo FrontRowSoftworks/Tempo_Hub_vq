@@ -1,4 +1,4 @@
-var app = angular.module('TempoHub.controllers', [])
+var app = angular.module('TempoHub.controllers', ['ionic'])
 
 
 app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', function($scope, $location, $state, $ionicPopup, $timeout, $http){
@@ -15,6 +15,7 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', functio
   $scope.signInCtrl = {};
 
   $scope.signInCtrl.signIn = function() {
+
     $http.post('http://localhost/HubServices/SignIn.php', { 'email': $scope.email, 'pw': $scope.pw}).success(function(response) {
       console.log("login response: " + response);
       if (response == 1) {
@@ -44,9 +45,11 @@ app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $htt
       console.log("Trying to log in now!" + " You have chosen " + $scope.marketingOptIn);
       $scope.marketingOptIn = $scope.marketingOptIn ==  undefined || $scope.marketingOptIn == 0 ? 0 : 1;
 
+      var userDevice = ionic.Platform.platform();
+      $scope.userDevice = userDevice;
 
       console.log($scope.email + ' ' + $scope.password + ' ' + $scope.mobileNumber + ' ' + $scope.mobileNumber + ' ' +
-      $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + 'nodeviceyet')
+      $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + $scope.userDevice)
 
       console.log($scope.marketingOptIn);
       $http.post('http://localhost/HubServices/SignUp.php', {
@@ -165,8 +168,20 @@ app.controller('mainMenuCtrl', ['$scope', '$state', function($scope, $state){
 
 
 app.controller('currentCtrl', function($scope){
-  console.log('currentCtrl');
+  $scope.currentVideos = [
+    { title: 'name 1', id: 1 },
+    { title: 'name 2', id: 2 },
+    { title: 'name 3', id: 3 },
+    { title: 'name 4', id: 4 },
+    { title: 'name 5', id: 5 },
+    { title: 'name 6', id: 6 }
+  ];
 });
+
+app.controller('videoCtrl', function($scope, $stateParams) {
+});
+
+
 app.controller('previousCtrl', function($scope){
   console.log('previousCtrl');
 });

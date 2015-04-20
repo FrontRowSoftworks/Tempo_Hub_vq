@@ -86,6 +86,16 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 }
             })
+            .state('votingMenu.current.single', {
+                url: "/:videoId",
+                views: {
+                    'menuContent': {
+                        templateUrl: "views/videoPage.html",
+                        controller: 'videoCtrl'
+                    }
+                }
+            })
+
             .state('votingMenu.previous', {
                 url: '/previous',
                 views: {
@@ -94,7 +104,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
                         controller: 'previousCtrl'
                     }
                 }
-            })
+            });
 
 
     $urlRouterProvider.otherwise('/signIn');

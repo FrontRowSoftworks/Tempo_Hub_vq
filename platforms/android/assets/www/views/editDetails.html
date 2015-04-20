@@ -3,27 +3,34 @@
         <div class="list" ng-controller="EditDetailsCtrl">
             <center>
                 <br>
-                <!--<h1>Details</h1>-->
                 <img src="img/tempo_logo.jpg">
                 <br><br>
+
+				<h4>Details</h4>
                 <label class="item item-input">
                     <input type="email" placeholder="email" ng-model = "email">
                 </label>
                 <label class="item item-input">
                     <input type="tel" placeholder="mobile number" ng-model = "mobileNumber">
                 </label>
-		        <label class = "item item-input item-select">
-		            <select ng-model="country" ng-init="country=countries[0]" ng-options="country.name for country in countries"></select>
-		        </label>
-		
+				<label class = "item item-input">
+					<select ng-model="country" ng-init="country=countries[0]" ng-options="country.name for country in countries"></select>
+				</label>
+				<br>
+				</center>
+				<!--<ion-checkbox ng-model="marketingOptIn" ng-true-value="1" ng-false-value="0">
+                      <center>Receive promotions from TEMPO?</center>
+                  </ion-checkbox> -->
+				  <br />
+				  <center>
 
-                <button class ="button button-positive" ng-click="">
+                <button class ="button button-positive" ng-click="editDetailsCtrl.editDetails()">
                     Change Details
                 </button>
 
 
                 <br><br>
-		        <!--<h1>Change Password</h1>-->
+		        <h4>Password</h4>
                 <label class="item item-input">
                     <input type="password" placeholder="current password" ng-model = "currentPassword">
                 </label>
@@ -33,8 +40,9 @@
 		        <label class="item item-input">
                     <input type="password" placeholder="confirm password" ng-model = "confirmPassword">
                 </label>
+				<br>
 
-                <button class ="button button-positive" ng-click="">
+                <button class ="button button-positive" ng-click="editDetailsCtrl.changePassword()">
                     Change Password
                 </button>
 		  </center>

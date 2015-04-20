@@ -27,8 +27,8 @@
               <input type="password" placeholder="confirm password" ng-model = "confirmPassword">
               </label>
               </center>
-                  <ion-checkbox ng-model="marketingOptIn">
-                      <center>Receive promotional materials<br> from TEMPO?</center>
+                  <ion-checkbox ng-model="marketingOptIn" ng-true-value="1" ng-false-value="0">
+                      <center>Receive promotions from TEMPO?</center>
                   </ion-checkbox>
               <center>
               <button class ="button button-block button-positive" ng-click="signUpCtrl.signUp()">

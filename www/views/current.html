@@ -1,5 +1,11 @@
 <ion-view view-title="current">
     <ion-content padding="true">
-        <p>Testy test test mc test</p>
+        <ion-list>
+            <ion-item ng-repeat="video in currentVideos" href="#/votingMenu/current/{{video.id}}">
+                {{video.title}}
+            </ion-item>
+        </ion-list>
     </ion-content>
 </ion-view>
+
+
