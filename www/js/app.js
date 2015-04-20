@@ -53,8 +53,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
             })
             .state('mainMenu.editDetails', {
                 url: '/editDetails',
-                templateUrl: 'views/editDetails.html'
+                views: {
+                    'menuContent': {
+                        templateUrl: "views/editDetails.html"
+                    }
+                }
             })
+			
             .state('mainMenu.info', {
                 url: "/info",
                 views: {
@@ -102,5 +107,18 @@ app.service("UserQuestion", function UserQuestion(){
     var reset = function () {
         UserQuestion.question = "Default";
         UserQuestion.email = "Default";
+    }
+});
+app.service("UserDetails", function UserDetails(){
+    var UserDetils = this;
+    UserDetails.email="Default";
+	UserDetails.mobileNumber="Default";
+	UserDetails.country="Default";
+	
+    var reset = function () {
+		UserDetails.email="Default";
+		UserDetails.mobileNumber="Default";
+		UserDetails.country="Default";
+	
     }
 });

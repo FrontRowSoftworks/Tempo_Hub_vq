@@ -10,7 +10,7 @@ app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', functi
 
 }]);
 
-app.controller('SignInCtrl', ['$scope', '$http','$state', function($scope, $http, $state) {
+app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', function($scope, $http, $state, UserDetails) {
   console.log("Welcome to the SignIn state!");
   $scope.signInCtrl = {};
 
@@ -19,6 +19,10 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', function($scope, $http
       console.log("login response: " + response);
       if (response == 1) {
         alert("logged in!");
+		//UserEmail = $scope.email;
+		UserDetails.email = $scope.email;
+		console.log(UserDetails.email);
+		//console.log($scope.UserEmail);
         $scope.email = null;
         $scope.pw = null;
         $state.go('mainMenu.mainPage');
@@ -169,11 +173,47 @@ app.controller('previousCtrl', function($scope){
 
 
 
-app.controller('EditDetailsCtrl', ['$scope', function ($scope){
+app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($scope, UserDetails, $http){
   $scope.editDetailsCtrl = {};
+  console.log(UserDetails.email);
+    $scope.editDetailsCtrl.editDetails = function(){
+	    console.log(UserDetails.email);
+	    $scope.oldEmail = UserDetails.email;
+        $http.post('http://localhost/HubServices/EditDetails.php', {
+            'oldEmail' : $scope.oldEmail,
+            'email': $scope.email,
+            'mobileNumber': $scope.mobileNumber,
+            'country': $scope.country.name,
+            'marketingOptIn': "0"
+        })
+    }
+  $scope.editDetailsCtrl.changePassword = function(){
+      $scope.currentEmail = UserDetails.email;
+      console.log($scope.currentEmail);
+      console.log("changePassword Called with new password = " + $scope.newPassword);
+      $http.post('http://localhost/HubServices/changePassword.php', {
+          'email' : $scope.currentEmail,
+          'currentPassword' : $scope.currentPassword,
+          'newPassword' : $scope.newPassword
+      })
+          .success(function (response) {
+              if (response == 1) {
+                  console.log(response);
+                  alert("Password Update Successful");
+                  $state.go('mainMenu');
+              }
+              else {
+                  console.log(response);
+                  alert("Password Update Failed");
+              }
+          }
+      )
+  }
+
   $scope.countries = countries;
 }]);
 
+UserEmail = "default";
 
 var countries = [ {name: "country"}, {name: "United States"}, {name: "Israel"}, {name: "Afghanistan"}, {name: "Albania"}, {name: "Algeria"},
   { name: "AmericanSamoa"}, {name: "Andorra"}, {name: "Angola"}, {name: "Anguilla"}, {name: "Antigua and Barbuda"}, {name: "Argentina"},

@@ -17,9 +17,14 @@
 					<select ng-model="country" ng-init="country=countries[0]" ng-options="country.name for country in countries"></select>
 				</label>
 				<br>
-		
+				</center>
+				<!--<ion-checkbox ng-model="marketingOptIn" ng-true-value="1" ng-false-value="0">
+                      <center>Receive promotions from TEMPO?</center>
+                  </ion-checkbox> -->
+				  <br />
+				  <center>
 
-                <button class ="button button-positive" ng-click="">
+                <button class ="button button-positive" ng-click="editDetailsCtrl.editDetails()">
                     Change Details
                 </button>
 
@@ -37,7 +42,7 @@
                 </label>
 				<br>
 
-                <button class ="button button-positive" ng-click="">
+                <button class ="button button-positive" ng-click="editDetailsCtrl.changePassword()">
                     Change Password
                 </button>
 		  </center>
