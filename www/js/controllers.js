@@ -20,11 +20,8 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', functio
       console.log("login response: " + response);
       if (response == 1) {
         alert("logged in!");
-		//UserEmail = $scope.email;
-		UserDetails.email = $scope.email;
-		console.log(UserDetails.email);
-		//console.log($scope.UserEmail);
-        $scope.email = null;
+		UserDetails.set($scope.email, "4321", "Israel");
+          $scope.email = null;
         $scope.pw = null;
         $state.go('mainMenu.mainPage');
       } else {
@@ -190,39 +187,57 @@ app.controller('previousCtrl', function($scope){
 
 app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($scope, UserDetails, $http){
   $scope.editDetailsCtrl = {};
-  console.log(UserDetails.email);
-    $scope.editDetailsCtrl.editDetails = function(){
-	    console.log(UserDetails.email);
-	    $scope.oldEmail = UserDetails.email;
-        $http.post('http://localhost/HubServices/EditDetails.php', {
-            'oldEmail' : $scope.oldEmail,
-            'email': $scope.email,
-            'mobileNumber': $scope.mobileNumber,
-            'country': $scope.country.name,
-            'marketingOptIn': "0"
-        })
+    $scope.user = {
+            email: UserDetails.email,
+            mobileNumber: UserDetails.mobileNumber
     }
+
+    $scope.editDetailsCtrl.editDetails = function(){
+	    console.log("email in input: " + $scope.user.email);
+	    $scope.oldEmail = UserDetails.email;
+
+        if ($scope.user.email != undefined && $scope.user.email != null &&  $scope.user.mobileNumber != undefined && $scope.user.mobileNumber != null && $scope.country.name != undefined && $scope.country.name != "country") {
+            UserDetails.country = $scope.country.name;
+
+            $http.post('http://localhost/HubServices/EditDetails.php', {
+                'oldEmail': $scope.oldEmail,
+                'email': $scope.user.email,
+                'mobileNumber': $scope.user.mobileNumber,
+                'country': UserDetails.country,
+            }).success(function (response) {
+                console.log("reset service response: " + response);
+                if (response > 0) {
+                    alert("details changed!");
+                    if (response > 1) alert("email not changed, already exists");
+                } else alert("not changed");
+            });
+        } else alert ("fill in all the fields!");
+    }
+
   $scope.editDetailsCtrl.changePassword = function(){
       $scope.currentEmail = UserDetails.email;
       console.log($scope.currentEmail);
-      console.log("changePassword Called with new password = " + $scope.newPassword);
-      $http.post('http://localhost/HubServices/changePassword.php', {
-          'email' : $scope.currentEmail,
-          'currentPassword' : $scope.currentPassword,
-          'newPassword' : $scope.newPassword
-      })
-          .success(function (response) {
+      if (($scope.newPassword == $scope.confirmPassword) && $scope.currentPassword != null && $scope.currentPassword != undefined && $scope.newPassword != null && $scope.newPassword != undefined && $scope.confirmPassword != null && $scope.confirmPassword != undefined) {
+          console.log("changePassword Called with new password = " + $scope.newPassword);
+          $http.post('http://localhost/HubServices/ChangePassword.php', {
+              'email': $scope.currentEmail,
+              'currentPassword': $scope.currentPassword,
+              'newPassword': $scope.newPassword
+          }).success(function (response) {
               if (response == 1) {
                   console.log(response);
                   alert("Password Update Successful");
-                  $state.go('mainMenu');
+                  //$state.go('mainMenu');
               }
               else {
                   console.log(response);
                   alert("Password Update Failed");
               }
-          }
-      )
+          })
+          $scope.currentPassword = null;
+          $scope.newPassword = null;
+          $scope.confirmPassword = null;
+      } else alert ("fill in all the fields");
   }
 
   $scope.countries = countries;

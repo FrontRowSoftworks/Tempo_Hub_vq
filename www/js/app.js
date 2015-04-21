@@ -119,16 +119,23 @@ app.service("UserQuestion", function UserQuestion(){
         UserQuestion.email = "Default";
     }
 });
-app.service("UserDetails", function UserDetails(){
-    var UserDetils = this;
-    UserDetails.email="Default";
-	UserDetails.mobileNumber="Default";
-	UserDetails.country="Default";
-	
-    var reset = function () {
-		UserDetails.email="Default";
-		UserDetails.mobileNumber="Default";
-		UserDetails.country="Default";
-	
+app.factory("UserDetails", function () {
+    var UserDetails  = {
+        email: null,
+        mobileNumber: null,
+        lastVotedTime: null
     }
+
+    UserDetails.set = function(email, mobileNumber, country) {
+        UserDetails.email = email;
+        UserDetails.mobileNumber = mobileNumber;
+        UserDetails.country = country;
+        console.log ("UD: " + UserDetails.email + ", " + UserDetails.mobileNumber + ", " + UserDetails.country);
+    }
+
+    UserDetails.reset = function () {
+        UserDetails.set(null, null, null);
+    }
+
+    return UserDetails;
 });

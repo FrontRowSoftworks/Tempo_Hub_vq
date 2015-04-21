@@ -1,4 +1,4 @@
-<ion-view title="Edit Details">
+<ion-view title="Edit Account">
      <ion-content>
         <div class="list" ng-controller="EditDetailsCtrl">
             <center>
@@ -8,10 +8,10 @@
 
 				<h4>Details</h4>
                 <label class="item item-input">
-                    <input type="email" placeholder="email" ng-model = "email">
+                    <input type="email" placeholder="email" ng-model = "user.email">
                 </label>
                 <label class="item item-input">
-                    <input type="tel" placeholder="mobile number" ng-model = "mobileNumber">
+                    <input type="tel" placeholder="mobile number" ng-model = "user.mobileNumber">
                 </label>
 				<label class = "item item-input">
 					<select ng-model="country" ng-init="country=countries[0]" ng-options="country.name for country in countries"></select>
@@ -45,6 +45,8 @@
                 <button class ="button button-positive" ng-click="editDetailsCtrl.changePassword()">
                     Change Password
                 </button>
+
+					  <br><br>
 		  </center>
       </div>
     </ion-content>
