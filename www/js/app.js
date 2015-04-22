@@ -80,18 +80,18 @@ app.config(function($stateProvider, $urlRouterProvider) {
             .state('votingMenu.current', {
                 url: '/current',
                 views: {
-                    'current': {
+                    'votingMenuContent': {
                         templateUrl: 'views/current.html',
                         controller: 'currentCtrl'
                     }
                 }
             })
-            .state('votingMenu.current.single', {
-                url: "/:videoId",
+            .state('votingMenu.single', {
+                url: "/current/:videoId",
                 views: {
-                    'menuContent': {
+                    'votingMenuContent': {
                         templateUrl: "views/videoPage.html",
-                        controller: 'videoCtrl'
+                        controller: 'currentCtrl'
                     }
                 }
             })
@@ -99,7 +99,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
             .state('votingMenu.previous', {
                 url: '/previous',
                 views: {
-                    'previous': {
+                    'votingMenuContent': {
                         templateUrl: 'views/previous.html',
                         controller: 'previousCtrl'
                     }
