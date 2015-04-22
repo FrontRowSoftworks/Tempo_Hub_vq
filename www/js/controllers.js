@@ -15,7 +15,6 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', functio
   $scope.signInCtrl = {};
 
   $scope.signInCtrl.signIn = function() {
-    $state.go('mainMenu.mainPage');
 
     $http.post('http://localhost/HubServices/SignIn.php', { 'email': $scope.email, 'pw': $scope.pw}).success(function(response) {
       console.log("login response: " + response);
