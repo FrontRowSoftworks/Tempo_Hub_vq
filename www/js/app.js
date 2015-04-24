@@ -59,7 +59,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 }
             })
-			
             .state('mainMenu.info', {
                 url: "/info",
                 views: {
@@ -68,10 +67,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 }
             })
-            .state('clipsMenu', {
-                url: '/clipsMenu',
-                templateUrl: 'views/clipsMenu.html'
-            })
+
             .state('votingMenu', {
                 url: '/votingMenu',
                 abstract: true,
@@ -95,7 +91,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 }
             })
-
             .state('votingMenu.previous', {
                 url: '/previous',
                 views: {
@@ -104,9 +99,22 @@ app.config(function($stateProvider, $urlRouterProvider) {
                         controller: 'previousCtrl'
                     }
                 }
+            })
+
+            .state('clipsMenu', {
+                url: '/clipsMenu',
+                abstract: true,
+                templateUrl: 'views/clipsMenu.html'
+            })
+            .state('clipsMenu.clips', {
+                url: '/clips',
+                views: {
+                    'clipsMenuContent': {
+                        templateUrl: 'views/clips.html',
+                        controller: 'clipsCtrl'
+                    }
+                }
             });
-
-
     $urlRouterProvider.otherwise('/signIn');
     });
 app.service("UserQuestion", function UserQuestion(){

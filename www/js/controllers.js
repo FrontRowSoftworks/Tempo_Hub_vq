@@ -162,7 +162,7 @@ app.controller('mainMenuCtrl', ['$scope', '$state', function($scope, $state){
   }
 
   $scope.mainMenuCtrl.clips = function() {
-    $state.go('clipsMenu');
+    $state.go('clipsMenu.clips');
   }
 }]);
 
