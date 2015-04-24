@@ -67,6 +67,14 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 }
             })
+            .state('mainMenu.contact', {
+                url: "/contact",
+                views: {
+                    'menuContent': {
+                        templateUrl: "views/contact.html"
+                    }
+                }
+            })
 
             .state('votingMenu', {
                 url: '/votingMenu',

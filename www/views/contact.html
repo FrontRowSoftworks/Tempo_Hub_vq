@@ -1,0 +1,20 @@
+<ion-view view-title="Contact TEMPO">
+	<ion-content>
+		<div class="list" ng-controller="ContactCtrl">
+		<center>
+			<br>
+			<img src="img/tempo_logo.jpg">
+			<br><br>
+			<label class = "item item-input dropDown">
+				<select  ng-model="subject" ng-init="subject=subjects[0]" ng-options="subject.name for subject in subjects"></select>
+			</label>
+			<label class="item item-input textBox">
+				<textarea rows="6" placeholder="message" ng-model="content"></textarea>
+			</label>
+			<button class ="button button-block button-positive" ng-click="contactCtrl.contact()">
+				Send
+			</button>
+		</center>
+		</div>
+	</ion-content>
+</ion-view>
