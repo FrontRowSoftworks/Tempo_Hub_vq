@@ -4,31 +4,34 @@ var app = angular.module('TempoHub.controllers', ['ionic'])
 app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', function($scope, $location, $state, $ionicPopup, $timeout, $http){
   $scope.controller ={};
   $scope.controller.forgotPassword = function() {
-    console.log("forgotPassword() Called");
     $state.go('ForgotPassword');
   };
 
 }]);
 
 app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', function($scope, $http, $state, UserDetails) {
-  console.log("Welcome to the SignIn state!");
-  $scope.signInCtrl = {};
+    if(UserDetails.hasUser()) {
+        $state.go('mainMenu.mainPage');
+    }
+
+    $scope.signInCtrl = {};
 
   $scope.signInCtrl.signIn = function() {
+      var email = $scope.email;
+      var pw = $scope.pw;
 
-    $http.post('http://localhost/HubServices/SignIn.php', { 'email': $scope.email, 'pw': $scope.pw}).success(function(response) {
-      console.log("login response: " + response);
+    $http.post('http://localhost/HubServices/SignIn.php', { 'email': email, 'pw': pw}).success(function(response) {
       if (response == 1) {
-        alert("logged in!");
-		UserDetails.set($scope.email, "4321", "Israel");
+          $http.post('http://localhost/HubServices/GetUser.php', { 'email': email}).success(function(response) {
+              UserDetails.set(email, response.mobile, response.vote_ts);
+          });
           $scope.email = null;
-        $scope.pw = null;
-        $state.go('mainMenu.mainPage');
+          $state.go('mainMenu.mainPage');
       } else {
         alert ("email/password combination incorrect");
-        $scope.pw = null;
       }
     });
+      $scope.pw = null;
   };
 
 }]);
@@ -183,6 +186,13 @@ app.controller('previousCtrl', function($scope){
   console.log('previousCtrl');
 });
 
+app.controller('SignOutCtrl', ['$scope', 'UserDetails', function ($scope, UserDetails) {
+    $scope.signOutCtrl = {};
+    $scope.signOutCtrl.signOut = function () {
+        UserDetails.reset();
+    }
+
+}]);
 
 
 app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($scope, UserDetails, $http){
@@ -197,17 +207,19 @@ app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($
 	    $scope.oldEmail = UserDetails.email;
 
         if ($scope.user.email != undefined && $scope.user.email != null &&  $scope.user.mobileNumber != undefined && $scope.user.mobileNumber != null && $scope.country.name != undefined && $scope.country.name != "country") {
-            UserDetails.country = $scope.country.name;
-
             $http.post('http://localhost/HubServices/EditDetails.php', {
                 'oldEmail': $scope.oldEmail,
                 'email': $scope.user.email,
                 'mobileNumber': $scope.user.mobileNumber,
-                'country': UserDetails.country,
+                'country': $scope.country.name
             }).success(function (response) {
                 console.log("reset service response: " + response);
                 if (response > 0) {
                     alert("details changed!");
+                    if (UserDetails.email != $scope.user.email) {
+                        if (response != 2) UserDetails.setEmail($scope.user.email);
+                    }
+                    UserDetails.setMobileNumber($scope.user.mobileNumber);
                     if (response > 1) alert("email not changed, already exists");
                 } else alert("not changed");
             });
@@ -242,8 +254,6 @@ app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($
 
   $scope.countries = countries;
 }]);
-
-UserEmail = "default";
 
 var countries = [ {name: "country"}, {name: "United States"}, {name: "Israel"}, {name: "Afghanistan"}, {name: "Albania"}, {name: "Algeria"},
   { name: "AmericanSamoa"}, {name: "Andorra"}, {name: "Angola"}, {name: "Anguilla"}, {name: "Antigua and Barbuda"}, {name: "Argentina"},

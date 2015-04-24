@@ -126,15 +126,50 @@ app.factory("UserDetails", function () {
         lastVotedTime: null
     }
 
-    UserDetails.set = function(email, mobileNumber, country) {
+    UserDetails.set = function(email, mobileNumber, lastVotedTime) {
         UserDetails.email = email;
         UserDetails.mobileNumber = mobileNumber;
-        UserDetails.country = country;
-        console.log ("UD: " + UserDetails.email + ", " + UserDetails.mobileNumber + ", " + UserDetails.country);
+        UserDetails.lastVotedTime = lastVotedTime;
+        UserDetails.setLocalStorage();
+    }
+
+    UserDetails.setEmail = function(email) {
+        window.localStorage['email'] = email;
+        UserDetails.email = window.localStorage['email'];
+    }
+
+    UserDetails.setMobileNumber = function(mobileNumber) {
+        window.localStorage['mobileNumber'] = mobileNumber;
+        UserDetails.mobileNumber = window.localStorage['mobileNumber'];
+    }
+
+    UserDetails.setLastVotedTime = function(lastVotedTime) {
+        window.localStorage['lastVotedTime'] = lastVotedTime;
+        UserDetails.lastVotedTime = window.localStorage['lastVotedTime'];
     }
 
     UserDetails.reset = function () {
         UserDetails.set(null, null, null);
+        UserDetails.resetLocalStorage();
+    }
+
+    UserDetails.setLocalStorage = function() {
+        window.localStorage['email'] = UserDetails.email;
+        window.localStorage['mobileNumber'] = UserDetails.mobileNumber;
+        window.localStorage['lastVotedTime'] = UserDetails.lastVotedTime;
+    }
+
+    UserDetails.resetLocalStorage = function() {
+        window.localStorage['email'] = null;
+        window.localStorage['mobile'] = null;
+        window.localStorage['lastVotedTime'] = null;
+    }
+
+    UserDetails.hasUser = function () {
+        if (window.localStorage['email'] != "null" && window.localStorage['email'] != null && window.localStorage['email'] != undefined) {
+            UserDetails.set(window.localStorage['email'], window.localStorage['mobileNumber'], window.localStorage['lastVoteTime'], window.localStorage['password']);
+            return true;
+        } else return false;
     }
 
     return UserDetails;
