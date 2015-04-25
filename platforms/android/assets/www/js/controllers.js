@@ -1,36 +1,37 @@
-var app = angular.module('TempoHub.controllers', [])
+var app = angular.module('TempoHub.controllers', ['ionic'])
 
 
 app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', function($scope, $location, $state, $ionicPopup, $timeout, $http){
   $scope.controller ={};
   $scope.controller.forgotPassword = function() {
-    console.log("forgotPassword() Called");
     $state.go('ForgotPassword');
   };
 
 }]);
 
 app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', function($scope, $http, $state, UserDetails) {
-  console.log("Welcome to the SignIn state!");
-  $scope.signInCtrl = {};
+    if(UserDetails.hasUser()) {
+        $state.go('mainMenu.mainPage');
+    }
+
+    $scope.signInCtrl = {};
 
   $scope.signInCtrl.signIn = function() {
-    $http.post('http://localhost/HubServices/SignIn.php', { 'email': $scope.email, 'pw': $scope.pw}).success(function(response) {
-      console.log("login response: " + response);
+      var email = $scope.email;
+      var pw = $scope.pw;
+
+    $http.post('http://localhost/HubServices/SignIn.php', { 'email': email, 'pw': pw}).success(function(response) {
       if (response == 1) {
-        alert("logged in!");
-		//UserEmail = $scope.email;
-		UserDetails.email = $scope.email;
-		console.log(UserDetails.email);
-		//console.log($scope.UserEmail);
-        $scope.email = null;
-        $scope.pw = null;
-        $state.go('mainMenu.mainPage');
+          $http.post('http://localhost/HubServices/GetUser.php', { 'email': email}).success(function(response) {
+              UserDetails.set(email, response.mobile, response.vote_ts);
+          });
+          $scope.email = null;
+          $state.go('mainMenu.mainPage');
       } else {
         alert ("email/password combination incorrect");
-        $scope.pw = null;
       }
     });
+      $scope.pw = null;
   };
 
 }]);
@@ -44,9 +45,11 @@ app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $htt
       console.log("Trying to log in now!" + " You have chosen " + $scope.marketingOptIn);
       $scope.marketingOptIn = $scope.marketingOptIn ==  undefined || $scope.marketingOptIn == 0 ? 0 : 1;
 
+      var userDevice = ionic.Platform.platform();
+      $scope.userDevice = userDevice;
 
       console.log($scope.email + ' ' + $scope.password + ' ' + $scope.mobileNumber + ' ' + $scope.mobileNumber + ' ' +
-      $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + 'nodeviceyet')
+      $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + $scope.userDevice)
 
       console.log($scope.marketingOptIn);
       $http.post('http://localhost/HubServices/SignUp.php', {
@@ -57,7 +60,7 @@ app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $htt
         'answer': $scope.answer,
         'country': $scope.country.name,
         'marketingOptIn': $scope.marketingOptIn,
-        'device': $scope.device
+        'device': $scope.userDevice
       })
           .success(function (response) {
             if (response == 1) {
@@ -147,8 +150,7 @@ app.controller('ResetPasswordCtrl',['$state', '$scope', 'UserQuestion', '$http',
   }
 }]);
 
-app.controller('clipsCtrl', ['$scope', '$state', function($scope, $state){
-}]);
+
 
 app.controller('mainMenuCtrl', ['$scope', '$state', function($scope, $state){
 
@@ -159,61 +161,120 @@ app.controller('mainMenuCtrl', ['$scope', '$state', function($scope, $state){
   }
 
   $scope.mainMenuCtrl.clips = function() {
-    $state.go('clipsMenu');
+    $state.go('clipsMenu.clips');
   }
 }]);
 
+app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($scope, UserDetails, $http){
+    $scope.editDetailsCtrl = {};
+    $scope.user = {
+        email: UserDetails.email,
+        mobileNumber: UserDetails.mobileNumber
+    }
+
+    $scope.editDetailsCtrl.editDetails = function(){
+        console.log("email in input: " + $scope.user.email);
+        $scope.oldEmail = UserDetails.email;
+
+        if ($scope.user.email != undefined && $scope.user.email != null &&  $scope.user.mobileNumber != undefined && $scope.user.mobileNumber != null && $scope.country.name != undefined && $scope.country.name != "country") {
+            $http.post('http://localhost/HubServices/EditDetails.php', {
+                'oldEmail': $scope.oldEmail,
+                'email': $scope.user.email,
+                'mobileNumber': $scope.user.mobileNumber,
+                'country': $scope.country.name
+            }).success(function (response) {
+                console.log("reset service response: " + response);
+                if (response > 0) {
+                    alert("details changed!");
+                    if (UserDetails.email != $scope.user.email) {
+                        if (response != 2) UserDetails.setEmail($scope.user.email);
+                    }
+                    UserDetails.setMobileNumber($scope.user.mobileNumber);
+                    if (response > 1) alert("email not changed, already exists");
+                } else alert("not changed");
+            });
+        } else alert ("fill in all the fields!");
+    }
+
+    $scope.editDetailsCtrl.changePassword = function(){
+        $scope.currentEmail = UserDetails.email;
+        console.log($scope.currentEmail);
+        if (($scope.newPassword == $scope.confirmPassword) && $scope.currentPassword != null && $scope.currentPassword != undefined && $scope.newPassword != null && $scope.newPassword != undefined && $scope.confirmPassword != null && $scope.confirmPassword != undefined) {
+            console.log("changePassword Called with new password = " + $scope.newPassword);
+            $http.post('http://localhost/HubServices/ChangePassword.php', {
+                'email': $scope.currentEmail,
+                'currentPassword': $scope.currentPassword,
+                'newPassword': $scope.newPassword
+            }).success(function (response) {
+                if (response == 1) {
+                    console.log(response);
+                    alert("Password Update Successful");
+                    //$state.go('mainMenu');
+                }
+                else {
+                    console.log(response);
+                    alert("Password Update Failed");
+                }
+            });
+            $scope.currentPassword = null;
+            $scope.newPassword = null;
+            $scope.confirmPassword = null;
+        } else alert ("fill in all the fields");
+    }
+
+    $scope.countries = countries;
+}]);
+
+app.controller('ContactCtrl', ['$scope', '$http', 'UserDetails', function ($scope, $http, UserDetails) {
+    $scope.contactCtrl = {};
+    $scope.contactCtrl.contact = function () {
+        if ($scope.subject != "subject" && $scope.content != null && $scope.content!= undefined) {
+            console.log("contacting tempo...");
+            $http.post('http://localhost/HubServices/Contact.php', {
+                'email': UserDetails.email,
+                'subject': $scope.subject.name,
+                'content': $scope.content
+            }).success(function (response) {
+                console.log(response);
+                if (response == 1) {
+                    alert ("contacted!");
+                } else alert ("error contacting tempo");
+            });
+        } else alert ("fill in all the fields!")
+    }
+    $scope.subjects = subjects;
+}]);
+
+app.controller('SignOutCtrl', ['$scope', 'UserDetails', function ($scope, UserDetails) {
+    $scope.signOutCtrl = {};
+    $scope.signOutCtrl.signOut = function () {
+        UserDetails.reset();
+    }
+
+}]);
 
 app.controller('currentCtrl', function($scope){
-  console.log('currentCtrl');
+  $scope.currentVideos = [
+    { title: 'name 1', id: 1 },
+    { title: 'name 2', id: 2 },
+    { title: 'name 3', id: 3 },
+    { title: 'name 4', id: 4 },
+    { title: 'name 5', id: 5 },
+    { title: 'name 6', id: 6 }
+  ];
 });
+
+app.controller('videoCtrl', function($scope, $stateParams) {
+});
+
 app.controller('previousCtrl', function($scope){
   console.log('previousCtrl');
 });
 
-
-
-app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($scope, UserDetails, $http){
-  $scope.editDetailsCtrl = {};
-  console.log(UserDetails.email);
-    $scope.editDetailsCtrl.editDetails = function(){
-	    console.log(UserDetails.email);
-	    $scope.oldEmail = UserDetails.email;
-        $http.post('http://localhost/HubServices/EditDetails.php', {
-            'oldEmail' : $scope.oldEmail,
-            'email': $scope.email,
-            'mobileNumber': $scope.mobileNumber,
-            'country': $scope.country.name,
-            'marketingOptIn': "0"
-        })
-    }
-  $scope.editDetailsCtrl.changePassword = function(){
-      $scope.currentEmail = UserDetails.email;
-      console.log($scope.currentEmail);
-      console.log("changePassword Called with new password = " + $scope.newPassword);
-      $http.post('http://localhost/HubServices/changePassword.php', {
-          'email' : $scope.currentEmail,
-          'currentPassword' : $scope.currentPassword,
-          'newPassword' : $scope.newPassword
-      })
-          .success(function (response) {
-              if (response == 1) {
-                  console.log(response);
-                  alert("Password Update Successful");
-                  $state.go('mainMenu');
-              }
-              else {
-                  console.log(response);
-                  alert("Password Update Failed");
-              }
-          }
-      )
-  }
-
-  $scope.countries = countries;
+app.controller('clipsCtrl', ['$scope', '$state', function($scope, $state){
 }]);
 
-UserEmail = "default";
+var subjects = [ {name: "subject"}, {name: "CCC Write-In Vote"}, {name: "Question"}, {name: "Comment"}];
 
 var countries = [ {name: "country"}, {name: "United States"}, {name: "Israel"}, {name: "Afghanistan"}, {name: "Albania"}, {name: "Algeria"},
   { name: "AmericanSamoa"}, {name: "Andorra"}, {name: "Angola"}, {name: "Anguilla"}, {name: "Antigua and Barbuda"}, {name: "Argentina"},

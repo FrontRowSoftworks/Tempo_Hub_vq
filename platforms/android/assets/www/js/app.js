@@ -59,7 +59,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 }
             })
-			
             .state('mainMenu.info', {
                 url: "/info",
                 views: {
@@ -68,10 +67,15 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 }
             })
-            .state('clipsMenu', {
-                url: '/clipsMenu',
-                templateUrl: 'views/clipsMenu.html'
+            .state('mainMenu.contact', {
+                url: "/contact",
+                views: {
+                    'menuContent': {
+                        templateUrl: "views/contact.html"
+                    }
+                }
             })
+
             .state('votingMenu', {
                 url: '/votingMenu',
                 abstract: true,
@@ -80,8 +84,17 @@ app.config(function($stateProvider, $urlRouterProvider) {
             .state('votingMenu.current', {
                 url: '/current',
                 views: {
-                    'current': {
+                    'votingMenuContent': {
                         templateUrl: 'views/current.html',
+                        controller: 'currentCtrl'
+                    }
+                }
+            })
+            .state('votingMenu.single', {
+                url: "/current/:videoId",
+                views: {
+                    'votingMenuContent': {
+                        templateUrl: "views/videoPage.html",
                         controller: 'currentCtrl'
                     }
                 }
@@ -89,14 +102,27 @@ app.config(function($stateProvider, $urlRouterProvider) {
             .state('votingMenu.previous', {
                 url: '/previous',
                 views: {
-                    'previous': {
+                    'votingMenuContent': {
                         templateUrl: 'views/previous.html',
                         controller: 'previousCtrl'
                     }
                 }
             })
 
-
+            .state('clipsMenu', {
+                url: '/clipsMenu',
+                abstract: true,
+                templateUrl: 'views/clipsMenu.html'
+            })
+            .state('clipsMenu.clips', {
+                url: '/clips',
+                views: {
+                    'clipsMenuContent': {
+                        templateUrl: 'views/clips.html',
+                        controller: 'clipsCtrl'
+                    }
+                }
+            });
     $urlRouterProvider.otherwise('/signIn');
     });
 app.service("UserQuestion", function UserQuestion(){
@@ -109,16 +135,58 @@ app.service("UserQuestion", function UserQuestion(){
         UserQuestion.email = "Default";
     }
 });
-app.service("UserDetails", function UserDetails(){
-    var UserDetils = this;
-    UserDetails.email="Default";
-	UserDetails.mobileNumber="Default";
-	UserDetails.country="Default";
-	
-    var reset = function () {
-		UserDetails.email="Default";
-		UserDetails.mobileNumber="Default";
-		UserDetails.country="Default";
-	
+app.factory("UserDetails", function () {
+    var UserDetails  = {
+        email: null,
+        mobileNumber: null,
+        lastVotedTime: null
     }
+
+    UserDetails.set = function(email, mobileNumber, lastVotedTime) {
+        UserDetails.email = email;
+        UserDetails.mobileNumber = mobileNumber;
+        UserDetails.lastVotedTime = lastVotedTime;
+        UserDetails.setLocalStorage();
+    }
+
+    UserDetails.setEmail = function(email) {
+        window.localStorage['email'] = email;
+        UserDetails.email = window.localStorage['email'];
+    }
+
+    UserDetails.setMobileNumber = function(mobileNumber) {
+        window.localStorage['mobileNumber'] = mobileNumber;
+        UserDetails.mobileNumber = window.localStorage['mobileNumber'];
+    }
+
+    UserDetails.setLastVotedTime = function(lastVotedTime) {
+        window.localStorage['lastVotedTime'] = lastVotedTime;
+        UserDetails.lastVotedTime = window.localStorage['lastVotedTime'];
+    }
+
+    UserDetails.reset = function () {
+        UserDetails.set(null, null, null);
+        UserDetails.resetLocalStorage();
+    }
+
+    UserDetails.setLocalStorage = function() {
+        window.localStorage['email'] = UserDetails.email;
+        window.localStorage['mobileNumber'] = UserDetails.mobileNumber;
+        window.localStorage['lastVotedTime'] = UserDetails.lastVotedTime;
+    }
+
+    UserDetails.resetLocalStorage = function() {
+        window.localStorage['email'] = null;
+        window.localStorage['mobile'] = null;
+        window.localStorage['lastVotedTime'] = null;
+    }
+
+    UserDetails.hasUser = function () {
+        if (window.localStorage['email'] != "null" && window.localStorage['email'] != null && window.localStorage['email'] != undefined) {
+            UserDetails.set(window.localStorage['email'], window.localStorage['mobileNumber'], window.localStorage['lastVoteTime'], window.localStorage['password']);
+            return true;
+        } else return false;
+    }
+
+    return UserDetails;
 });

@@ -32,7 +32,11 @@
                         About
                     </ion-item>
 
-                    <ion-item nav-clear menu-close href="#/signIn">
+					<ion-item nav-clear menu-close href="#/mainMenu/contact">
+						Contact TEMPO
+					</ion-item>
+
+                    <ion-item nav-clear menu-close ng-controller="SignOutCtrl" ng-click="signOutCtrl.signOut()" href="#/signIn">
                         Sign Out
                     </ion-item>
 

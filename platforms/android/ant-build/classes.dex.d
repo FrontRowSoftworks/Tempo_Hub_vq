@@ -1,9 +1,19 @@
-/home/brian/frs/temp/Tempo_Hub_vq/platforms/android/ant-build/classes.dex : \
-/home/brian/frs/temp/Tempo_Hub_vq/platforms/android/ant-build/classes/com/ionicframework/tempohubv1167893/R.class \
-/home/brian/frs/temp/Tempo_Hub_vq/platforms/android/ant-build/classes/com/ionicframework/tempohubv1167893/BuildConfig.class \
-/home/brian/frs/temp/Tempo_Hub_vq/platforms/android/ant-build/classes/com/ionicframework/tempohubv1167893/R$string.class \
-/home/brian/frs/temp/Tempo_Hub_vq/platforms/android/ant-build/classes/com/ionicframework/tempohubv1167893/R$attr.class \
-/home/brian/frs/temp/Tempo_Hub_vq/platforms/android/ant-build/classes/com/ionicframework/tempohubv1167893/R$xml.class \
-/home/brian/frs/temp/Tempo_Hub_vq/platforms/android/ant-build/classes/com/ionicframework/tempohubv1167893/R$drawable.class \
-/home/brian/frs/temp/Tempo_Hub_vq/platforms/android/ant-build/classes/com/ionicframework/tempohubv1167893/MainActivity.class \
-/home/brian/frs/temp/Tempo_Hub_vq/platforms/android/ant-build/dexedLibs/classes-2d57fa455d5a4eacb7bb695b38aaadfe.jar \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes.dex : \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\com\ionicframework\tempohubv1167893\BuildConfig.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\com\ionicframework\tempohubv1167893\MainActivity.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\com\ionicframework\tempohubv1167893\R$attr.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\com\ionicframework\tempohubv1167893\R$drawable.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\com\ionicframework\tempohubv1167893\R$string.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\com\ionicframework\tempohubv1167893\R$xml.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\com\ionicframework\tempohubv1167893\R.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\org\apache\cordova\splashscreen\SplashScreen$1.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\org\apache\cordova\splashscreen\SplashScreen$2.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\org\apache\cordova\splashscreen\SplashScreen$3.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\org\apache\cordova\splashscreen\SplashScreen$4.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\org\apache\cordova\splashscreen\SplashScreen$5$1.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\org\apache\cordova\splashscreen\SplashScreen$5.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\org\apache\cordova\splashscreen\SplashScreen$6$1.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\org\apache\cordova\splashscreen\SplashScreen$6.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\org\apache\cordova\splashscreen\SplashScreen$7.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\classes\org\apache\cordova\splashscreen\SplashScreen.class \
+C:\Users\slore_000\Tempo_Hub_vq\platforms\android\ant-build\dexedLibs\classes-f2abc2ce691ace00e1af708df5b1803d.jar \
