@@ -253,16 +253,20 @@ app.controller('SignOutCtrl', ['$scope', 'UserDetails', function ($scope, UserDe
 
 }]);
 
-app.controller('currentCtrl', function($scope){
-  $scope.currentVideos = [
-    { title: 'name 1', id: 1 },
-    { title: 'name 2', id: 2 },
-    { title: 'name 3', id: 3 },
-    { title: 'name 4', id: 4 },
-    { title: 'name 5', id: 5 },
-    { title: 'name 6', id: 6 }
-  ];
-});
+app.controller('currentCtrl', [ '$scope', '$http', function($scope,$http){
+    $scope.currentCtrl = {};
+    $scope.currentVideos = [];
+        $http.post('http://localhost/HubServices/GetCCCDetails.php')
+       .success(function (response) {
+         console.log("GetCCCDetails service response: " + response[0]['title']);
+         for(i = 0; i < response.length; i++)
+         $scope.currentVideos[i]={title: response[i]['title'], artist:response[i]['artist'], id: response[i]['brightcove_id']}; //
+
+       });
+
+
+
+}]);
 
 app.controller('videoCtrl', function($scope, $stateParams) {
 });

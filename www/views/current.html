@@ -3,8 +3,12 @@
         <ion-list>
             <ion-item ng-repeat="video in currentVideos" href="#/votingMenu/current/{{video.id}}">
                 <p>Can customize however</p>
-                {{video.title}}
+                Title: {{video.title}} <br>
+                Artist:{{video.artist}}
             </ion-item>
+            <button class ="button button-block button-positive" ng-click="currentCtrl.doStuff()">
+                doStuff
+            </button>
         </ion-list>
     </ion-content>
 </ion-view>

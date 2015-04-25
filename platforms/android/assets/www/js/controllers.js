@@ -253,7 +253,11 @@ app.controller('SignOutCtrl', ['$scope', 'UserDetails', function ($scope, UserDe
 
 }]);
 
-app.controller('currentCtrl', function($scope){
+app.controller('currentCtrl', [ '$scope', '$http', function($scope,$http){
+    $http.post('http://localhost/HubServices/GetCCCDetails.php')
+    .success(function (response) {
+        console.log("GetCCCDetails service response: " + response);
+    });
   $scope.currentVideos = [
     { title: 'name 1', id: 1 },
     { title: 'name 2', id: 2 },
@@ -262,7 +266,7 @@ app.controller('currentCtrl', function($scope){
     { title: 'name 5', id: 5 },
     { title: 'name 6', id: 6 }
   ];
-});
+}]);
 
 app.controller('videoCtrl', function($scope, $stateParams) {
 });
