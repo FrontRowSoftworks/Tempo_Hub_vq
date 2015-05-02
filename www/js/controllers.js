@@ -39,44 +39,57 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', functio
 app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $http, $state) {
 
   $scope.signUpCtrl = {};
+    $scope.signUpCtrl.emailMessage="email";
   $scope.signUpCtrl.signUp = function() {
 
-    if (true) {//$scope.password == $scope.confirmPassword && $scope.email != undefined && $scope.mobileNumber != undefined){
-      console.log("Trying to log in now!" + " You have chosen " + $scope.marketingOptIn);
-      $scope.marketingOptIn = $scope.marketingOptIn ==  undefined || $scope.marketingOptIn == 0 ? 0 : 1;
+    if ($scope.password == $scope.confirmPassword
+        && validatePassword($scope.password)
+        && $scope.email != undefined
+        && $scope.mobileNumber != undefined) {
+        console.log("Trying to log in now!" + " You have chosen " + $scope.marketingOptIn);
+        $scope.marketingOptIn = $scope.marketingOptIn == undefined || $scope.marketingOptIn == 0 ? 0 : 1;
 
-      var userDevice = ionic.Platform.platform();
-      $scope.userDevice = userDevice;
+        var userDevice = ionic.Platform.platform();
+        $scope.userDevice = userDevice;
 
-      console.log($scope.email + ' ' + $scope.password + ' ' + $scope.mobileNumber + ' ' + $scope.mobileNumber + ' ' +
-      $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + $scope.userDevice)
+        console.log($scope.email + ' ' + $scope.password + ' ' + $scope.mobileNumber + ' ' + $scope.mobileNumber + ' ' +
+        $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + $scope.userDevice)
 
-      console.log($scope.marketingOptIn);
-      $http.post('http://localhost/HubServices/SignUp.php', {
-        'email': $scope.email,
-        'pw': $scope.password,
-        'mobileNumber': $scope.mobileNumber,
-        'question': $scope.question,
-        'answer': $scope.answer,
-        'country': $scope.country.name,
-        'marketingOptIn': $scope.marketingOptIn,
-        'device': $scope.userDevice
-      })
-          .success(function (response) {
-            if (response == 1) {
-              console.log(response);
-              alert("Account Creation Successful");
-              $state.go('SignIn');
+        console.log($scope.marketingOptIn);
+        $http.post('http://localhost/HubServices/SignUp.php', {
+            'email': $scope.email,
+            'pw': $scope.password,
+            'mobileNumber': $scope.mobileNumber,
+            'question': $scope.question,
+            'answer': $scope.answer,
+            'country': $scope.country.name,
+            'marketingOptIn': $scope.marketingOptIn,
+            'device': $scope.userDevice
+        })
+            .success(function (response) {
+                if (response == 1) {
+                    console.log(response);
+                    alert("Account Creation Successful");
+                    $state.go('SignIn');
+                }
+                else {
+                    console.log(response);
+                    alert("Account Creation Failed");
+                }
             }
-            else {
-              console.log(response);
-              alert("Account Creation Failed");
-            }
-          }
-      )
+        )
+    };
+    if($scope.email ==undefined){
+        $scope.email = "";
+        $scope.signUpCtrl.emailMessage = "Need a valid email";
     }
-    ;
   };
+  $scope.signUpCtrl.validateEmail = function(){
+      if($scope.email == undefined){
+          $scope.email = "";
+          $scope.signUpCtrl.emailMessage = "Need a valid email";
+      }
+  }
   $scope.countries = countries;
 }]);
 
@@ -130,7 +143,7 @@ app.controller('ResetPasswordCtrl',['$state', '$scope', 'UserQuestion', '$http',
 
   $scope.resetPasswordCtrl.resetPassword = function() {
     console.log("new password entered: " + $scope.newPassword);
-    if ($scope.newPassword != undefined) { // better validation to go here
+    if ($scope.newPassword == $scope.confirmPassword && validatePassword($scope.newPassword)) { // better validation to go here
       console.log("new password: " + $scope.newPassword);
 
       $http.post('http://localhost/HubServices/ResetPassword.php', { 'email': UserQuestion.email, 'pw': $scope.newPassword}).success(function(response) {
@@ -277,6 +290,19 @@ app.controller('previousCtrl', function($scope){
 
 app.controller('clipsCtrl', ['$scope', '$state', function($scope, $state){
 }]);
+
+validatePassword = function(password){
+    if(password == undefined)
+    return false;
+    if(password.lenght < 8 || password.length >50)
+        return false;
+    var letter =/[a-z]/i;
+    var number =/\d+/g;
+    var containsLetter = password.match(letter) ? true : false;
+    var containsNumber = password.match(number) ? true : false;
+    return(containsLetter && containsNumber);
+};
+
 
 var subjects = [ {name: "subject"}, {name: "CCC Write-In Vote"}, {name: "Question"}, {name: "Comment"}];
 

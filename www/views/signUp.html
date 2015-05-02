@@ -6,13 +6,15 @@
               <img src="img/tempo_logo.jpg">
               <br><br>
               <label class="item item-input">
-                  <input type="email" placeholder="email" ng-model = "email">
+                  <input type="email" placeholder="{{signUpCtrl.emailMessage}}" ng-blur = "signUpCtrl.validateEmail()"  ng-model = "email">
               </label>
               <label class="item item-input">
                   <input type="tel" placeholder="mobile number" ng-model = "mobileNumber">
               </label>
-              <label class = "item item-input dropDown">
-                  <select ng-model="country" ng-init="country=countries[0]" ng-options="country.name for country in countries"></select>
+              <label class = "item item-input item-select">
+
+                  <div class = "input-label">Country</div>
+                  <select ng-model="country" ng-init="country=countries[1]" ng-options="country.name for country in countries"></select>
               </label>
               <label class="item item-input">
                   <input type="text" placeholder="security question" ng-model = "question">
