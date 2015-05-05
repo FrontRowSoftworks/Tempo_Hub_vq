@@ -5,37 +5,131 @@
               <br>
               <img src="img/tempo_logo.jpg">
               <br><br>
-              <label class="item item-input">
-                  <input type="email" placeholder="{{signUpCtrl.emailMessage}}" ng-blur = "signUpCtrl.validateEmail()"  ng-model = "email">
-              </label>
-              <label class="item item-input">
-                  <input type="tel" placeholder="mobile number" ng-model = "mobileNumber">
-              </label>
-              <label class = "item item-input item-select">
+			  </center>
 
-                  <div class = "input-label">Country</div>
-                  <select ng-model="country" ng-init="country=countries[1]" ng-options="country.name for country in countries"></select>
-              </label>
-              <label class="item item-input">
-                  <input type="text" placeholder="security question" ng-model = "question">
-              </label>
-              <label class="item item-input">
-                  <input type="password" placeholder="answer" ng-model = "answer">
-              </label>
-              <label class="item item-input">
-                  <input type="password" placeholder="password" ng-model = "password">
-              </label>
-              <label class="item item-input">
-              <input type="password" placeholder="confirm password" ng-model = "confirmPassword">
-              </label>
-              </center>
-                  <ion-checkbox ng-model="marketingOptIn" ng-true-value="1" ng-false-value="0" ng-checked="true">
-                      <center>Receive promotions from TEMPO?</center>
-                  </ion-checkbox>
-              <center>
-              <button class ="button button-block button-positive" ng-click="signUpCtrl.signUp()">
-                  Sign Up
-              </button>
+			  <form name="signUpForm" ng-submit="signUpCtrl.signUp()" novalidate>
+				  <center>
+
+					  <label class="item item-input">
+						  <input type="email"
+								 placeholder="email"
+								 ng-model="email"
+								 name="email"
+								 ng-pattern="/(.+)@(.+){2,}\.(.+){2,}/"
+								 ng-required="true">
+					  </label>
+					  <div ng-messages="signUpForm.email.$error" ng-if="signUpForm.email.$touched">
+						  <p class="form-error" ng-message="required">email is required</p>
+						  <p class="form-error" ng-message="pattern">not a valid email</p>
+					  </div>
+
+					  <label class="item item-input">
+						  <input type="tel"
+								 placeholder="mobile number"
+								 ng-model = "mobileNumber"
+								 name="mobileNumber"
+								 ng-pattern="/^\d+$/"
+								 ng-required="true">
+					  </label>
+					  <div ng-messages="signUpForm.mobileNumber.$error" ng-if="signUpForm.mobileNumber.$touched">
+						  <p class="form-error"  ng-message="required">mobile number is required</p>
+						  <p class="form-error" ng-message="pattern">numbers only</p>
+					  </div>
+
+					  <label class = "item item-input dropDown">
+						  <select ng-model="country"
+								  ng-options="country.name for country in countries"
+								  name="country"
+								  ng-required="true">
+							  <option value="">country</option>
+						  </select>
+					  </label>
+					  <div ng-messages="signUpForm.country.$error" ng-if="signUpForm.country.$touched">
+						  <p class="form-error" ng-message="required">select a country</p>
+					  </div>
+
+					  <label class="item item-input">
+						  <input type="text"
+								 placeholder="security question"
+								 ng-model = "question"
+								 name="question"
+								 ng-required="true"
+								 ng-minlength="2">
+					  </label>
+					  <div ng-messages="signUpForm.question.$error" ng-if="signUpForm.question.$touched">
+						  <p class="form-error" ng-message="required">question is required</p>
+						  <p class="form-error" ng-message="minlength">too short</p>
+					  </div>
+
+					  <label class="item item-input">
+						  <input type="password"
+								 placeholder="answer"
+								 ng-model = "answer"
+								 name="answer"
+								 ng-required="true"
+								 ng-maxlength="50"
+								 ng-minlength="1">
+					  </label>
+					  <div ng-messages="signUpForm.answer.$error" ng-if="signUpForm.answer.$touched">
+						  <p class="form-error" ng-message="required">answer is required</p>
+						  <p class="form-error" ng-message="maxlength">too long</p>
+						  <p class="form-error" ng-message="minlength">too short</p>
+					  </div>
+
+					  <label class="item item-input">
+						  <input type="password"
+								 placeholder="password"
+								 ng-model = "password"
+								 name="password"
+								 ng-minlength="6"
+								 ng-maxlength="50"
+								 ng-pattern="/^[a-z0-9]+$/i"
+								 ng-required="true">
+					  </label>
+					  <div ng-messages="signUpForm.password.$error" ng-if="signUpForm.password.$touched">
+						  <p class="form-error" ng-message="required">password is required</p>
+						  <p class="form-error" ng-message="pattern">letters and numbers only</p>
+						  <p class="form-error" ng-message="minlength">too short</p>
+						  <p class="form-error" ng-message="maxlength">too long</p>
+					  </div>
+
+
+					  <label class="item item-input">
+						  <input type="password"
+								 placeholder="confirm password"
+								 ng-model = "confirmPassword"
+								 name="confirmPassword"
+								 compare-to="password"
+								 ng-required="true">
+					  </label>
+					  <div ng-messages="signUpForm.confirmPassword.$error" ng-if="signUpForm.confirmPassword.$touched">
+						  <p class="form-error" ng-message="required">confirmed password is required</p>
+						  <p class="form-error" ng-message="compareTo">passwords must match</p>
+					  </div>
+
+              	  </center>
+
+			      <ion-checkbox ng-model="marketingOptIn"
+								ng-true-value="1"
+								ng-false-value="0">
+				  	<center>
+					  Receive promotions from TEMPO?
+					</center>
+              	  </ion-checkbox>
+
+			  	  <input type="submit" ng-disabled="!signUpForm.$valid" class ="button button-block button-positive" value="Sign Up">
+
+			  </form>
+		  	  <center><ion-spinner ng-show="loading"></ion-spinner></center>
+			  <div class="button button-block button-assertive"
+				   ng-show="error">
+				  {{errorMessage}}
+			  </div>
+
+			  <div class="button button-block button-balanced"
+				   ng-show="success">
+				  account created!
+			  </div>
 
               <a class="button button-block button-positive" ui-sref="SignIn">Back</a>
           </center>

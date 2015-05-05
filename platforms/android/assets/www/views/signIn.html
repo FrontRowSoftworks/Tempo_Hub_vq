@@ -6,17 +6,27 @@
 		        <img src="img/tempo_logo.jpg">
                 <br><br>
                 <div ng-controller="SignInCtrl">
+					<form name="signInForm" ng-submit="signInCtrl.signIn()" novalidate>
                 <label class="item item-input">
-                    <input type="email" placeholder="email" ng-model = "email">
+                    <input type="email" placeholder="email" name="email" ng-model = "email" ng-pattern="/(.+)@(.+){2,}\.(.+){2,}/" ng-required="true">
                 </label>
+						<div class="form-error" ng-messages="signInForm.email.$error" ng-if="signInForm.email.$touched">
+							<p ng-message="required">email is required</p>
+							<p ng-message="pattern">not a valid email</p>
+						</div>
+
                 <label class="item item-input">
-                    <input type="password" placeholder="password" ng-model = "pw">
+                    <input type="password" placeholder="password" name="password" ng-model = "pw" ng-minlength="6" ng-maxlength="50" ng-pattern="/^[a-z0-9]+$/i" ng-required="true">
                 </label>
+						<div class="form-error" ng-messages="signInForm.password.$error" ng-if="signInForm.password.$touched">
+							<p ng-message="required">password is required</p>
+							<p ng-message="pattern">letters and numbers only</p>
+							<p ng-message="minlength">too short</p>
+							<p ng-message="maxlength">too long</p>
+						</div>
 
-
-                <button class ="button button-block button-positive" ng-click="signInCtrl.signIn()">
-                    Sign In
-                </button>
+						<input type="submit" ng-disabled="!signInForm.$valid" class ="button button-block button-positive" value="Sign In">
+					</form>
                 </div>
 
                 <a class ="button button-block button-positive" ui-sref="SignUp">Sign Up</a>

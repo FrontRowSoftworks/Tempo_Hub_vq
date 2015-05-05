@@ -1,5 +1,5 @@
 
-var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers'])//, 'TempoHub.controllers', 'TempoHub.services'])
+var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers', 'ngMessages'])//, 'TempoHub.controllers', 'TempoHub.services'])
 
 /*app.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -14,6 +14,8 @@ var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers'])//, 'Temp
     }
   });
 });*/
+
+
 app.config(function($stateProvider, $urlRouterProvider) {
 
         $stateProvider
@@ -143,49 +145,67 @@ app.factory("UserDetails", function () {
     }
 
     UserDetails.set = function(email, mobileNumber, lastVotedTime) {
+        console.log("UserDetails.set called");
         UserDetails.email = email;
         UserDetails.mobileNumber = mobileNumber;
         UserDetails.lastVotedTime = lastVotedTime;
         UserDetails.setLocalStorage();
+        console.log("After UserDetails.set call, UserDetails.email =" + UserDetails.email + ", UserDetails.mobileNumber =" + UserDetails.mobileNumber + ", lastVotedTime =" + UserDetails.lastVotedTime);
     }
 
     UserDetails.setEmail = function(email) {
+        console.log("UserDetails.setEmail called");
         window.localStorage['email'] = email;
         UserDetails.email = window.localStorage['email'];
+        console.log("UserDetails.setEmail call complete");
     }
 
     UserDetails.setMobileNumber = function(mobileNumber) {
+        console.log("UserDetails.setMobileNumber called");
         window.localStorage['mobileNumber'] = mobileNumber;
         UserDetails.mobileNumber = window.localStorage['mobileNumber'];
+        console.log("UserDetails.setMobileNumber call complete");
     }
 
     UserDetails.setLastVotedTime = function(lastVotedTime) {
+        console.log("UserDetails.setLastVotedTime called");
         window.localStorage['lastVotedTime'] = lastVotedTime;
         UserDetails.lastVotedTime = window.localStorage['lastVotedTime'];
+        console.log("UserDetails.setLastVotedTime call complete");
     }
 
     UserDetails.reset = function () {
+        console.log("UserDetails.reset called");
         UserDetails.set(null, null, null);
         UserDetails.resetLocalStorage();
+        console.log("After UserDetails.reset call, UserDetails.email =" + UserDetails.email + ", UserDetails.mobileNumber =" + UserDetails.mobileNumber + ", lastVotedTime =" + UserDetails.lastVotedTime);
     }
 
     UserDetails.setLocalStorage = function() {
+        console.log("UserDetails.setLocalStorage called");
         window.localStorage['email'] = UserDetails.email;
         window.localStorage['mobileNumber'] = UserDetails.mobileNumber;
         window.localStorage['lastVotedTime'] = UserDetails.lastVotedTime;
+        console.log("After UserDetails.setLocalStorage call, window.localStorage['email'] =" + window.localStorage['email'] + ", window.localStorage['mobileNumber'] =" + window.localStorage['mobileNumber']);
     }
 
     UserDetails.resetLocalStorage = function() {
+        console.log("UserDetails.resetLocalStorage called");
         window.localStorage['email'] = null;
-        window.localStorage['mobile'] = null;
+        window.localStorage['mobileNumber'] = null;
         window.localStorage['lastVotedTime'] = null;
+        console.log("After UserDetails.resetLocalStorage call, window.localStorage['email'] =" + window.localStorage['email'] + ", window.localStorage['mobileNumber'] =" + window.localStorage['mobileNumber']);
     }
 
     UserDetails.hasUser = function () {
         if (window.localStorage['email'] != "null" && window.localStorage['email'] != null && window.localStorage['email'] != undefined) {
             UserDetails.set(window.localStorage['email'], window.localStorage['mobileNumber'], window.localStorage['lastVoteTime'], window.localStorage['password']);
             return true;
-        } else return false;
+            console.log("UserDetails.hasUser called: result is true");
+        } else {
+            return false;
+            console.log("UserDetails.hasUser called: result is false");
+        }
     }
 
     return UserDetails;

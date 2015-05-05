@@ -11,3 +11,22 @@ input.textBox:-moz-placeholder { text-align: left; }
 
 .dropDown * { width:100%;}
 
+.formError {
+    background-color: red;
+    width: 100%;
+}
+
+.form-error {
+    display: block;
+    padding: 8px;
+    border: 1px solid #ef473a;
+    margin-top: 8px;
+    color: #ef473a;
+}
+
+.form-success {
+    color: #28a54c;
+}
+
+
+

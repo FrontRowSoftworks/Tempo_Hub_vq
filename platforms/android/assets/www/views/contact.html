@@ -1,0 +1,33 @@
+<ion-view view-title="Contact TEMPO">
+	<ion-content>
+		<div class="list" ng-controller="ContactCtrl">
+		<center>
+			<br>
+			<img src="img/tempo_logo.jpg">
+			<br><br>
+
+			<form name="contactForm" ng-submit="contactCtrl.contact()" novalidate>
+				<label class = "item item-input dropDown">
+					<select  ng-model="subject" ng-options="subject.name for subject in subjects" name="subject" ng-required="true">
+						<option value="">subject</option>
+					</select>
+				</label>
+					<div ng-messages="contactForm.subject.$error" ng-if="contactForm.subject.$touched">
+						<p ng-message="required">select a subject</p>
+					</div>
+
+
+				<label class="item item-input textBox">
+					<textarea rows="6" placeholder="message" ng-model="content" name="message" ng-required="true"></textarea>
+				</label>
+					<div ng-messages="contactForm.message.$error" ng-if="contactForm.message.$touched">
+						<p ng-message="required">message is required</p>
+					</div>
+
+				<input type="submit" ng-disabled="!contactForm.$valid" class ="button button-block button-positive" value="Send">
+
+			</form>
+		</center>
+		</div>
+	</ion-content>
+</ion-view>

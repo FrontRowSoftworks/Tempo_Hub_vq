@@ -6,15 +6,34 @@
                  <img src="img/tempo_logo.jpg">
                  <br><br>
                  <p>{{question}}</p>
-		        <label class="item item-input">
-                    <input type = "password" placeholder="answer" ng-model = "answer">
-                </label>
 
-                 <button class ="button button-block button-positive" ng-click ="securityQuestionCtrl.answerQuestion()">
-                     Reset Password
-                 </button>
+				 <form name="securityForm" ng-submit="securityQuestionCtrl.answerQuestion()" novalidate>
 
-                 <a class ="button button-block button-positive" ui-sref ="SignIn">Back</a>
+					 <label class="item item-input">
+						<input type = "password"
+							   placeholder="answer"
+							   ng-model = "answer"
+							   name="answer"
+							   ng-required="true"
+							   ng-maxlength="50"
+							   ng-minlength="1">
+					 </label>
+					 <div ng-messages="securityForm.answer.$error" ng-if="securityForm.answer.$touched">
+						 <p class="form-error" ng-message="required">answer is required</p>
+						 <p class="form-error" ng-message="maxlength">too long</p>
+						 <p class="form-error" ng-message="minlength">too short</p>
+					 </div>
+
+					<input type="submit" ng-disabled="!securityForm.$valid" class ="button button-block button-positive" value="Reset Password">
+
+				 </form>
+				 <ion-spinner ng-show="loading"></ion-spinner>
+				 <div class="button button-block button-assertive"
+					  ng-show="error">
+					 {{errorMessage}}
+				 </div>
+
+				 <a class ="button button-block button-positive" ui-sref ="SignIn">Back</a>
 		  </center>
       </div>
     </ion-content>

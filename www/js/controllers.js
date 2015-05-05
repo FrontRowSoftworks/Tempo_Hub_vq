@@ -1,174 +1,223 @@
 var app = angular.module('TempoHub.controllers', ['ionic'])
 
+var compareTo = function() {
+    return {
+        require: "ngModel",
+        scope: {
+            otherModelValue: "=compareTo"
+        },
+        link: function(scope, element, attributes, ngModel) {
+
+            ngModel.$validators.compareTo = function(modelValue) {
+                return modelValue == scope.otherModelValue;
+            };
+
+            scope.$watch("otherModelValue", function() {
+                ngModel.$validate();
+            });
+        }
+    };
+};
+
+app.directive("compareTo", compareTo);
 
 app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', function($scope, $location, $state, $ionicPopup, $timeout, $http){
-  $scope.controller ={};
+  $scope.controller = {};
   $scope.controller.forgotPassword = function() {
     $state.go('ForgotPassword');
   };
-
 }]);
 
 app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', function($scope, $http, $state, UserDetails) {
     if(UserDetails.hasUser()) {
+        console.log("UD at SignInCtrl: " + UserDetails.email + ", " + UserDetails.mobileNumber);
         $state.go('mainMenu.mainPage');
+    } else {
+        console.log("UserDetails.reset called from SignInCtrl");
+        UserDetails.reset();
     }
 
     $scope.signInCtrl = {};
-
-  $scope.signInCtrl.signIn = function() {
+    $scope.signInCtrl.signIn = function() {
+      $scope.loading = true;
       var email = $scope.email;
       var pw = $scope.pw;
+      console.log(email);
 
-    $http.post('http://localhost/HubServices/SignIn.php', { 'email': email, 'pw': pw}).success(function(response) {
-      if (response == 1) {
-          $http.post('http://localhost/HubServices/GetUser.php', { 'email': email}).success(function(response) {
-              UserDetails.set(email, response.mobile, response.vote_ts);
-          });
-          $scope.email = null;
-          $state.go('mainMenu.mainPage');
-      } else {
-        alert ("email/password combination incorrect");
-      }
-    });
-      $scope.pw = null;
-  };
+        $http.post('http://localhost/HubServices/SignIn.php', { 'email': email, 'pw': pw})
+            .success(function(response) {
+                $scope.loading = false;
+                if (response == 1) {
+                  $scope.error = false;
+                  $http.post('http://localhost/HubServices/GetUser.php', { 'email': email }).success(function(response) {
+                      UserDetails.set(email, response.mobile, response.vote_ts);
+                      console.log("UserDetails.set called from SignInCtrl");
+                  });
+                  $scope.email = null;
+                  $scope.pw  = null;
+                  $scope.signInForm.$setUntouched();
+                  $state.go('mainMenu.mainPage');
+                } else {
+                    $scope.errorMessage = "incorrect email/password combination!";
+                    $scope.error = true;
+                      $scope.pw = null;
+                      $scope.signInForm.$setUntouched();
+                }
+            })
+            .error(function(data, status, headers, config) {
+                $scope.loading = false;
+                $scope.errorMessage = "error contacting server, try again!";
+                $scope.error = true;
+        });
+    };
 
 }]);
 
 app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $http, $state) {
-
+  $scope.success = false;
+  $scope.marketingOptIn = 1;
   $scope.signUpCtrl = {};
-    $scope.signUpCtrl.emailMessage="email";
   $scope.signUpCtrl.signUp = function() {
+      $scope.loading = true;
+      $scope.userDevice = ionic.Platform.platform();
 
-    if ($scope.password == $scope.confirmPassword
-        && validatePassword($scope.password)
-        && $scope.email != undefined
-        && $scope.mobileNumber != undefined) {
-        console.log("Trying to log in now!" + " You have chosen " + $scope.marketingOptIn);
-        $scope.marketingOptIn = $scope.marketingOptIn == undefined || $scope.marketingOptIn == 0 ? 0 : 1;
-
-        var userDevice = ionic.Platform.platform();
-        $scope.userDevice = userDevice;
-
-        console.log($scope.email + ' ' + $scope.password + ' ' + $scope.mobileNumber + ' ' + $scope.mobileNumber + ' ' +
-        $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + $scope.userDevice)
-
-        console.log($scope.marketingOptIn);
-        $http.post('http://localhost/HubServices/SignUp.php', {
-            'email': $scope.email,
-            'pw': $scope.password,
-            'mobileNumber': $scope.mobileNumber,
-            'question': $scope.question,
-            'answer': $scope.answer,
-            'country': $scope.country.name,
-            'marketingOptIn': $scope.marketingOptIn,
-            'device': $scope.userDevice
-        })
-            .success(function (response) {
-                if (response == 1) {
-                    console.log(response);
-                    alert("Account Creation Successful");
-                    $state.go('SignIn');
-                }
-                else {
-                    console.log(response);
-                    alert("Account Creation Failed");
-                }
-            }
-        )
-    };
-    if($scope.email ==undefined){
-        $scope.email = "";
-        $scope.signUpCtrl.emailMessage = "Need a valid email";
-    }
-  };
-  $scope.signUpCtrl.validateEmail = function(){
-      if($scope.email == undefined){
-          $scope.email = "";
-          $scope.signUpCtrl.emailMessage = "Need a valid email";
-      }
+      $http.post('http://localhost/HubServices/SignUp.php', {
+          'email': $scope.email,
+          'pw': $scope.password,
+          'mobileNumber': $scope.mobileNumber,
+          'question': $scope.question,
+          'answer': $scope.answer,
+          'country': $scope.country.name,
+          'marketingOptIn': $scope.marketingOptIn,
+          'device': $scope.userDevice
+      })
+          .success(function (response) {
+              $scope.loading = false;
+              if (response == 1) {
+                  $scope.success = true;
+                  $scope.error = false;
+                  $scope.signUpForm.$setUntouched();
+                  $state.go('SignIn');
+              }
+              else {
+                  $scope.errorMessage = "email already in use!";
+                  $scope.error = true;
+              }
+          })
+          .error(function(data, status, headers, config) {
+              $scope.loading = false;
+              $scope.errorMessage = "error contacting server, try again!";
+              $scope.error = true;
+          });
   }
-  $scope.countries = countries;
+    $scope.countries = countries;
 }]);
 
 app.controller('ForgotPasswordCtrl', ['$scope', '$state', '$http', 'UserQuestion', function($scope, $state, $http, UserQuestion){
-  console.log(UserQuestion.question);
-  console.log("Welcome to the forgot Password state!");
   $scope.forgotPasswordCtrl = {};
   $scope.forgotPasswordCtrl.getQuestion = function() {
-    if ($scope.email != undefined) {
-      $http.post('http://localhost/HubServices/GetSecurityQuestion.php', { 'email': $scope.email}).success(function(response) {
-        if(response.length > 0){
-          console.log('service response: ' + response);
-          UserQuestion.question = response;
-          UserQuestion.email = $scope.email;
-          console.log('question is: ' + UserQuestion.question);
-          $state.go('SecurityQuestion');
-          $scope.email = null;
-        }
-        else
-          alert("No account found for that email!");
+      $scope.loading = true;
+      $http.post('http://localhost/HubServices/GetSecurityQuestion.php', { 'email': $scope.email })
+          .success(function(response) {
+              $scope.loading = false;
+              if (response.trim().length > 0) {
+                  $scope.error = false;
+                  UserQuestion.question = response;
+                  UserQuestion.email = $scope.email;
+                  $state.go('SecurityQuestion');
+                  $scope.email = null;
+                  $scope.forgotPasswordForm.$setUntouched();
+              }
+              else {
+                  $scope.error = true;
+                  $scope.errorMessage = "no account found!";
+              }
+        })
+      .error(function(data, status, headers, config) {
+          $scope.loading = false;
+          $scope.errorMessage = "error contacting server, try again!";
+          $scope.error = true;
       });
-    } else {
-      alert("Enter a valid email!")
-    }
-
-  };
+  }
 }]);
 
 app.controller('SecurityQuestionCtrl',['$state', '$scope', 'UserQuestion', '$http', function($state,$scope, UserQuestion, $http){
   $scope.securityQuestionCtrl = {};
   $scope.question = UserQuestion.question;
   $scope.securityQuestionCtrl.answerQuestion = function(){
-    if ($scope.answer != undefined) {
-      console.log("Your answer was " + $scope.answer);
-      console.log("stored email is: " + UserQuestion.email);
-
-      $http.post('http://localhost/HubServices/AnswerSecurityQuestion.php', { 'email': UserQuestion.email, 'answer': $scope.answer}).success(function(response) {
-        console.log("reset service response: " + response);
-        if (response == 1) $state.go('ResetPassword');
-        else alert ("answer is incorrect");
-        $scope.answer = null;
+      $scope.loading = true;
+      $http.post('http://localhost/HubServices/AnswerSecurityQuestion.php', { 'email': UserQuestion.email, 'answer': $scope.answer})
+          .success(function(response) {
+              $scope.loading = false;
+                if (response == 1) {
+                    $scope.error = false;
+                    $state.go('ResetPassword');
+                }
+                else {
+                    $scope.error = true;
+                    $scope.errorMessage = "answer is incorrect!";
+                }
+          })
+      .error(function(data, status, headers, config) {
+          $scope.loading = false;
+          $scope.errorMessage = "error contacting server, try again!";
+          $scope.error = true;
       });
-    } else {
-      console.log("no answer entered");
-    }
-  };
-}]);
-
-app.controller('ResetPasswordCtrl',['$state', '$scope', 'UserQuestion', '$http', function($state,$scope, UserQuestion, $http){
-  $scope.resetPasswordCtrl = {};
-
-  $scope.resetPasswordCtrl.resetPassword = function() {
-    console.log("new password entered: " + $scope.newPassword);
-    if ($scope.newPassword == $scope.confirmPassword && validatePassword($scope.newPassword)) { // better validation to go here
-      console.log("new password: " + $scope.newPassword);
-
-      $http.post('http://localhost/HubServices/ResetPassword.php', { 'email': UserQuestion.email, 'pw': $scope.newPassword}).success(function(response) {
-        console.log("reset password service response: " + response);
-
-        if (response == 1) {
-          alert("password reset");
-          $state.go('SignIn');
-
-        }
-        else alert ("error when resetting password");
-        $scope.newPassword = null;
-      });
-    } else {
-      console.log("enter a valid password"); //this actually needs to be part of the post method otherwise it doesn't run!
-    }
+      $scope.answer = null;
+      $scope.securityForm.$setUntouched();
   }
 }]);
 
+app.controller('ResetPasswordCtrl',['$state', '$scope', 'UserQuestion', '$http', function($state,$scope, UserQuestion, $http){
+  $scope.success = false;
+  $scope.resetPasswordCtrl = {};
+  $scope.resetPasswordCtrl.resetPassword = function() {
+    $scope.loading = true;
+    $http.post('http://localhost/HubServices/ResetPassword.php', { 'email': UserQuestion.email, 'pw': $scope.newPassword}).success(function(response) {
+        if (response == 1) {
+            $scope.loading = false;
+            $scope.success = true;
+            $scope.error = false;
+            $state.go('SignIn');
+        }
+        else {
+            $scope.error = true;
+            $scope.errorMessage = "error resetting password!";
+        }
+      })
+    .error(function(data, status, headers, config) {
+        $scope.loading = false;
+        $scope.errorMessage = "error contacting server, try again!";
+        $scope.error = true;
+    });
+    $scope.newPassword = null;
+    $scope.confirmPassword = null;
+    $scope.resetPasswordForm.$setUntouched();
+  }
+}]);
 
+app.controller('settingsMenuCtrl', ['$scope', '$state', function($scope, $state) {
+    $scope.settingsMenuCtrl = {};
+    $scope.settingsMenuCtrl.goToEditDetails = function () {
+        $state.go('mainMenu.editDetails');
+    }
+}]);
 
-app.controller('mainMenuCtrl', ['$scope', '$state', function($scope, $state){
+app.controller('mainMenuCtrl', ['$scope', '$state', 'UserDetails', function($scope, $state, UserDetails){
+  /*
+  check for user details has been omitted here because it creates an infinite loop :)
+  if the user tries to navigate anywhere past this screen without actually being logged in,
+  they'll be redirected to the sign in page anyway.
+
+  if (!UserDetails.hasUser()) {
+      $state.go('SignIn');
+      console.log("no user");
+  }*/
 
   console.log("Welcome To the main menu state!");
-  $scope.mainMenuCtrl ={};
+
+  $scope.mainMenuCtrl = {};
+
   $scope.mainMenuCtrl.voting = function() {
     $state.go('votingMenu.current');
   }
@@ -178,7 +227,16 @@ app.controller('mainMenuCtrl', ['$scope', '$state', function($scope, $state){
   }
 }]);
 
-app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($scope, UserDetails, $http){
+app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$state', '$http', function ($scope, UserDetails, $state, $http){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
+
+    $scope.detailsError = false;
+    $scope.passwordError = false;
+    $scope.detailsSuccess = false;
+    $scope.passwordSuccess = false;
     $scope.editDetailsCtrl = {};
     $scope.user = {
         email: UserDetails.email,
@@ -186,75 +244,141 @@ app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($
     }
 
     $scope.editDetailsCtrl.editDetails = function(){
+        $scope.detailsLoading = true;
         console.log("email in input: " + $scope.user.email);
         $scope.oldEmail = UserDetails.email;
 
-        if ($scope.user.email != undefined && $scope.user.email != null &&  $scope.user.mobileNumber != undefined && $scope.user.mobileNumber != null && $scope.country.name != undefined && $scope.country.name != "country") {
-            $http.post('http://localhost/HubServices/EditDetails.php', {
+       $http.post('http://localhost/HubServices/EditDetails.php', {
                 'oldEmail': $scope.oldEmail,
                 'email': $scope.user.email,
                 'mobileNumber': $scope.user.mobileNumber,
                 'country': $scope.country.name
             }).success(function (response) {
-                console.log("reset service response: " + response);
+                $scope.detailsLoading = false;
+                $scope.passwordError = false;
+                $scope.passwordSuccess = false;
                 if (response > 0) {
-                    alert("details changed!");
-                    if (UserDetails.email != $scope.user.email) {
-                        if (response != 2) UserDetails.setEmail($scope.user.email);
-                    }
                     UserDetails.setMobileNumber($scope.user.mobileNumber);
-                    if (response > 1) alert("email not changed, already exists");
-                } else alert("not changed");
-            });
-        } else alert ("fill in all the fields!");
+                }
+                if (response == 1) {
+                    $scope.detailsSuccessMessage = "details changed!";
+                    $scope.detailsSuccess = true;
+                    $scope.detailsError = false;
+                    if (UserDetails.email != $scope.user.email) {
+                        UserDetails.setEmail($scope.user.email);
+                    }
+                } else if (response == 2) {
+                    $scope.user.email = UserDetails.email;
+                    $scope.detailsErrorMessage = "email not changed, already in use!";
+                    $scope.detailsError = true;
+                    $scope.detailsSuccessMessage = "details (except email) changed!";
+                    $scope.detailsSuccess = true;
+                } else {
+                    $scope.detailsErrorMessage = "error changing details!";
+                    $scope.detailsError = true;
+                }
+            })
+           .error(function(data, status, headers, config) {
+               $scope.detailsLoading = false;
+               $scope.detailsSuccess = false;
+               $scope.detailsErrorMessage = "error contacting server, try again!";
+               $scope.detailsError = true;
+           });
     }
 
     $scope.editDetailsCtrl.changePassword = function(){
+        $scope.passwordLoading = true;
         $scope.currentEmail = UserDetails.email;
         console.log($scope.currentEmail);
-        if (($scope.newPassword == $scope.confirmPassword) && $scope.currentPassword != null && $scope.currentPassword != undefined && $scope.newPassword != null && $scope.newPassword != undefined && $scope.confirmPassword != null && $scope.confirmPassword != undefined) {
-            console.log("changePassword Called with new password = " + $scope.newPassword);
-            $http.post('http://localhost/HubServices/ChangePassword.php', {
-                'email': $scope.currentEmail,
-                'currentPassword': $scope.currentPassword,
-                'newPassword': $scope.newPassword
-            }).success(function (response) {
-                if (response == 1) {
-                    console.log(response);
-                    alert("Password Update Successful");
-                    //$state.go('mainMenu');
-                }
-                else {
-                    console.log(response);
-                    alert("Password Update Failed");
-                }
-            });
-            $scope.currentPassword = null;
-            $scope.newPassword = null;
-            $scope.confirmPassword = null;
-        } else alert ("fill in all the fields");
+        $http.post('http://localhost/HubServices/ChangePassword.php', {
+            'email': $scope.currentEmail,
+            'currentPassword': $scope.currentPassword,
+            'newPassword': $scope.newPassword
+        }).success(function (response) {
+            $scope.passwordLoading = false;
+            $scope.detailsError = false;
+            $scope.detailsSuccess = false;
+            if (response == 1) {
+                $scope.passwordSuccess = true;
+                $scope.passwordError = false;
+            }
+            else {
+                $scope.passwordErrorMessage = "current password is incorrect!";
+                $scope.passwordError = true;
+                $scope.passwordSuccess = false;
+            }
+        })
+        .error(function(data, status, headers, config) {
+            $scope.passwordLoading = false;
+            $scope.passwordSuccess = false;
+            $scope.passwordErrorMessage = "error contacting server, try again!";
+            $scope.passwordError = true;
+        });
+        $scope.currentPassword = null;
+        $scope.newPassword = null;
+        $scope.confirmPassword = null;
+        $scope.editPasswordForm.$setUntouched();
     }
+
+    $scope.$on('$locationChangeStart', function( event ) {
+        $scope.detailsError = false;
+        $scope.passwordError = false;
+        $scope.detailsSuccess = false;
+        $scope.passwordSuccess = false;
+        $scope.user = {
+            email: UserDetails.email,
+            mobileNumber: UserDetails.mobileNumber
+        }
+    });
+
 
     $scope.countries = countries;
 }]);
 
-app.controller('ContactCtrl', ['$scope', '$http', 'UserDetails', function ($scope, $http, UserDetails) {
+app.controller('ContactCtrl', ['$scope', '$http', 'UserDetails', '$state', function ($scope, $http, UserDetails, $state) {
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
+
+    $scope.success = false;
+    $scope.error = false;
     $scope.contactCtrl = {};
     $scope.contactCtrl.contact = function () {
-        if ($scope.subject != "subject" && $scope.content != null && $scope.content!= undefined) {
-            console.log("contacting tempo...");
-            $http.post('http://localhost/HubServices/Contact.php', {
+        $scope.loading = true;
+        $http.post('http://localhost/HubServices/Contact.php', {
                 'email': UserDetails.email,
                 'subject': $scope.subject.name,
                 'content': $scope.content
             }).success(function (response) {
-                console.log(response);
+                 $scope.loading = false;
                 if (response == 1) {
-                    alert ("contacted!");
-                } else alert ("error contacting tempo");
+                    $scope.success = true;
+                    $scope.error = false;
+                } else {
+                    $scope.errorMessage = "error contacting TEMPO!";
+                    $scope.error = true;
+                    $scope.success = false;
+                }
+            })
+            .error(function(data, status, headers, config) {
+                $scope.loading = false;
+                $scope.errorMessage = "error contacting server, try again!";
+                $scope.error = true;
+                $scope.success = false;
             });
-        } else alert ("fill in all the fields!")
+        $scope.content = null;
+        $scope.contactForm.$setUntouched();
     }
+
+    $scope.$on('$locationChangeStart', function( event ) {
+        $scope.success = false;
+        $scope.error = false;
+        $scope.content = null;
+        $scope.contactForm.$setUntouched();
+    });
+
+
     $scope.subjects = subjects;
 }]);
 
@@ -262,11 +386,17 @@ app.controller('SignOutCtrl', ['$scope', 'UserDetails', function ($scope, UserDe
     $scope.signOutCtrl = {};
     $scope.signOutCtrl.signOut = function () {
         UserDetails.reset();
+        console.log("UD after SignOut: " + UserDetails.email + ", " + UserDetails.mobileNumber);
     }
 
 }]);
 
-app.controller('currentCtrl', [ '$scope', '$http', function($scope,$http){
+app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', function($scope, $http, UserDetails, $state){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
+
     $scope.currentCtrl = {};
     $scope.currentVideos = [];
         $http.post('http://localhost/HubServices/GetCCCDetails.php')
@@ -281,32 +411,31 @@ app.controller('currentCtrl', [ '$scope', '$http', function($scope,$http){
 
 }]);
 
-app.controller('videoCtrl', function($scope, $stateParams) {
-});
-
-app.controller('previousCtrl', function($scope){
-  console.log('previousCtrl');
-});
-
-app.controller('clipsCtrl', ['$scope', '$state', function($scope, $state){
+app.controller('videoCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state) {
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
 }]);
 
-validatePassword = function(password){
-    if(password == undefined)
-    return false;
-    if(password.lenght < 8 || password.length >50)
-        return false;
-    var letter =/[a-z]/i;
-    var number =/\d+/g;
-    var containsLetter = password.match(letter) ? true : false;
-    var containsNumber = password.match(number) ? true : false;
-    return(containsLetter && containsNumber);
-};
+app.controller('previousCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
+  console.log('previousCtrl');
+}]);
 
+app.controller('clipsCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
+}]);
 
-var subjects = [ {name: "subject"}, {name: "CCC Write-In Vote"}, {name: "Question"}, {name: "Comment"}];
+var subjects = [ {name: "CCC Write-In Vote"}, {name: "Question"}, {name: "Comment"}];
 
-var countries = [ {name: "country"}, {name: "United States"}, {name: "Israel"}, {name: "Afghanistan"}, {name: "Albania"}, {name: "Algeria"},
+var countries = [ {name: "United States"}, {name: "Israel"}, {name: "Afghanistan"}, {name: "Albania"}, {name: "Algeria"},
   { name: "AmericanSamoa"}, {name: "Andorra"}, {name: "Angola"}, {name: "Anguilla"}, {name: "Antigua and Barbuda"}, {name: "Argentina"},
   {name: "Armenia"}, {name: "Aruba"}, {name: "Australia"}, {name: "Austria"}, {name: "Azerbaijan"}, {name: "Bahamas"}, {name: "Bahrain"},
   {name: "Bangladesh"}, {name: "Barbados"}, {name: "Belarus"}, {name: "Belgium"}, {name: "Belize"}, {name: "Benin"}, {name: "Bermuda"},

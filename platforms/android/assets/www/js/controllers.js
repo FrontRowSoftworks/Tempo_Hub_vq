@@ -1,8 +1,28 @@
 var app = angular.module('TempoHub.controllers', ['ionic'])
 
+var compareTo = function() {
+    return {
+        require: "ngModel",
+        scope: {
+            otherModelValue: "=compareTo"
+        },
+        link: function(scope, element, attributes, ngModel) {
+
+            ngModel.$validators.compareTo = function(modelValue) {
+                return modelValue == scope.otherModelValue;
+            };
+
+            scope.$watch("otherModelValue", function() {
+                ngModel.$validate();
+            });
+        }
+    };
+};
+
+app.directive("compareTo", compareTo);
 
 app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', function($scope, $location, $state, $ionicPopup, $timeout, $http){
-  $scope.controller ={};
+  $scope.controller = {};
   $scope.controller.forgotPassword = function() {
     $state.go('ForgotPassword');
   };
@@ -11,7 +31,10 @@ app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', functi
 
 app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', function($scope, $http, $state, UserDetails) {
     if(UserDetails.hasUser()) {
+        console.log("UD at SignInCtrl: " + UserDetails.email + ", " + UserDetails.mobileNumber);
         $state.go('mainMenu.mainPage');
+    } else {
+        UserDetails.reset();
     }
 
     $scope.signInCtrl = {};
@@ -19,19 +42,22 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', functio
   $scope.signInCtrl.signIn = function() {
       var email = $scope.email;
       var pw = $scope.pw;
+      console.log(email);
 
     $http.post('http://localhost/HubServices/SignIn.php', { 'email': email, 'pw': pw}).success(function(response) {
       if (response == 1) {
-          $http.post('http://localhost/HubServices/GetUser.php', { 'email': email}).success(function(response) {
+          $http.post('http://localhost/HubServices/GetUser.php', { 'email': email }).success(function(response) {
               UserDetails.set(email, response.mobile, response.vote_ts);
           });
           $scope.email = null;
+          $scope.pw  = null;
+          $scope.signInForm.$setUntouched();
           $state.go('mainMenu.mainPage');
       } else {
         alert ("email/password combination incorrect");
+          $scope.pw = null;
       }
     });
-      $scope.pw = null;
   };
 
 }]);
@@ -40,10 +66,8 @@ app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $htt
 
   $scope.signUpCtrl = {};
   $scope.signUpCtrl.signUp = function() {
-
-    if (true) {//$scope.password == $scope.confirmPassword && $scope.email != undefined && $scope.mobileNumber != undefined){
       console.log("Trying to log in now!" + " You have chosen " + $scope.marketingOptIn);
-      $scope.marketingOptIn = $scope.marketingOptIn ==  undefined || $scope.marketingOptIn == 0 ? 0 : 1;
+      $scope.marketingOptIn = $scope.marketingOptIn == undefined || $scope.marketingOptIn == 0 ? 0 : 1;
 
       var userDevice = ionic.Platform.platform();
       $scope.userDevice = userDevice;
@@ -51,33 +75,30 @@ app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $htt
       console.log($scope.email + ' ' + $scope.password + ' ' + $scope.mobileNumber + ' ' + $scope.mobileNumber + ' ' +
       $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + $scope.userDevice)
 
-      console.log($scope.marketingOptIn);
       $http.post('http://localhost/HubServices/SignUp.php', {
-        'email': $scope.email,
-        'pw': $scope.password,
-        'mobileNumber': $scope.mobileNumber,
-        'question': $scope.question,
-        'answer': $scope.answer,
-        'country': $scope.country.name,
-        'marketingOptIn': $scope.marketingOptIn,
-        'device': $scope.userDevice
+          'email': $scope.email,
+          'pw': $scope.password,
+          'mobileNumber': $scope.mobileNumber,
+          'question': $scope.question,
+          'answer': $scope.answer,
+          'country': $scope.country.name,
+          'marketingOptIn': $scope.marketingOptIn,
+          'device': $scope.userDevice
       })
           .success(function (response) {
-            if (response == 1) {
-              console.log(response);
-              alert("Account Creation Successful");
-              $state.go('SignIn');
-            }
-            else {
-              console.log(response);
-              alert("Account Creation Failed");
-            }
+              if (response == 1) {
+                  console.log(response);
+                  alert("Account Creation Successful");
+                  $state.go('SignIn');
+              }
+              else {
+                  console.log(response);
+                  alert("Account Creation Failed");
+              }
           }
-      )
-    }
-    ;
-  };
-  $scope.countries = countries;
+      );
+  }
+    $scope.countries = countries;
 }]);
 
 app.controller('ForgotPasswordCtrl', ['$scope', '$state', '$http', 'UserQuestion', function($scope, $state, $http, UserQuestion){
@@ -130,10 +151,7 @@ app.controller('ResetPasswordCtrl',['$state', '$scope', 'UserQuestion', '$http',
 
   $scope.resetPasswordCtrl.resetPassword = function() {
     console.log("new password entered: " + $scope.newPassword);
-    if ($scope.newPassword != undefined) { // better validation to go here
-      console.log("new password: " + $scope.newPassword);
-
-      $http.post('http://localhost/HubServices/ResetPassword.php', { 'email': UserQuestion.email, 'pw': $scope.newPassword}).success(function(response) {
+    $http.post('http://localhost/HubServices/ResetPassword.php', { 'email': UserQuestion.email, 'pw': $scope.newPassword}).success(function(response) {
         console.log("reset password service response: " + response);
 
         if (response == 1) {
@@ -144,9 +162,6 @@ app.controller('ResetPasswordCtrl',['$state', '$scope', 'UserQuestion', '$http',
         else alert ("error when resetting password");
         $scope.newPassword = null;
       });
-    } else {
-      console.log("enter a valid password"); //this actually needs to be part of the post method otherwise it doesn't run!
-    }
   }
 }]);
 
@@ -155,7 +170,8 @@ app.controller('ResetPasswordCtrl',['$state', '$scope', 'UserQuestion', '$http',
 app.controller('mainMenuCtrl', ['$scope', '$state', function($scope, $state){
 
   console.log("Welcome To the main menu state!");
-  $scope.mainMenuCtrl ={};
+
+    $scope.mainMenuCtrl ={};
   $scope.mainMenuCtrl.voting = function() {
     $state.go('votingMenu.current');
   }
@@ -166,6 +182,9 @@ app.controller('mainMenuCtrl', ['$scope', '$state', function($scope, $state){
 }]);
 
 app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($scope, UserDetails, $http){
+    console.log("UD at EDCtrl: " + UserDetails.email + ", " + UserDetails.mobileNumber);
+
+
     $scope.editDetailsCtrl = {};
     $scope.user = {
         email: UserDetails.email,
@@ -278,9 +297,9 @@ app.controller('previousCtrl', function($scope){
 app.controller('clipsCtrl', ['$scope', '$state', function($scope, $state){
 }]);
 
-var subjects = [ {name: "subject"}, {name: "CCC Write-In Vote"}, {name: "Question"}, {name: "Comment"}];
+var subjects = [ {name: "CCC Write-In Vote"}, {name: "Question"}, {name: "Comment"}];
 
-var countries = [ {name: "country"}, {name: "United States"}, {name: "Israel"}, {name: "Afghanistan"}, {name: "Albania"}, {name: "Algeria"},
+var countries = [ {name: "United States"}, {name: "Israel"}, {name: "Afghanistan"}, {name: "Albania"}, {name: "Algeria"},
   { name: "AmericanSamoa"}, {name: "Andorra"}, {name: "Angola"}, {name: "Anguilla"}, {name: "Antigua and Barbuda"}, {name: "Argentina"},
   {name: "Armenia"}, {name: "Aruba"}, {name: "Australia"}, {name: "Austria"}, {name: "Azerbaijan"}, {name: "Bahamas"}, {name: "Bahrain"},
   {name: "Bangladesh"}, {name: "Barbados"}, {name: "Belarus"}, {name: "Belgium"}, {name: "Belize"}, {name: "Benin"}, {name: "Bermuda"},

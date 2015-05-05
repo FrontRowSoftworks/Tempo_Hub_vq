@@ -17,14 +17,14 @@
             <ion-header-bar class="bar-positive">
                 <h1 class="title">Settings</h1>
             </ion-header-bar>
-            <ion-content>
+            <ion-content ng-controller="settingsMenuCtrl">
                 <ion-list>
 
 					<ion-item nav-clear menu-close href="#/mainMenu/mainPage">
 						Home
 					</ion-item>
 
-					<ion-item nav-clear menu-close href="#/mainMenu/editDetails">
+					<ion-item nav-clear menu-close ng-click="settingsMenuCtrl.goToEditDetails()">
                         Edit Account
                     </ion-item>
 

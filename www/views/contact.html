@@ -5,15 +5,47 @@
 			<br>
 			<img src="img/tempo_logo.jpg">
 			<br><br>
-			<label class = "item item-input dropDown">
-				<select  ng-model="subject" ng-init="subject=subjects[0]" ng-options="subject.name for subject in subjects"></select>
-			</label>
-			<label class="item item-input textBox">
-				<textarea rows="6" placeholder="message" ng-model="content"></textarea>
-			</label>
-			<button class ="button button-block button-positive" ng-click="contactCtrl.contact()">
-				Send
-			</button>
+
+			<form name="contactForm" ng-submit="contactCtrl.contact()" novalidate>
+				<label class = "item item-input dropDown">
+					<select  ng-model="subject"
+							 ng-options="subject.name for subject in subjects"
+							 name="subject"
+							 ng-required="true">
+						<option value="">subject</option>
+					</select>
+				</label>
+				<div ng-messages="contactForm.subject.$error" ng-if="contactForm.subject.$touched">
+					<p class="form-error" ng-message="required">select a subject</p>
+				</div>
+
+
+				<label class="item item-input textBox">
+					<textarea rows="6"
+							  placeholder="message"
+							  ng-model="content"
+							  name="message"
+							  ng-required="true">
+					</textarea>
+				</label>
+				<div ng-messages="contactForm.message.$error" ng-if="contactForm.message.$touched">
+					<p class="form-error" ng-message="required">message is required</p>
+				</div>
+
+				<input type="submit" ng-disabled="!contactForm.$valid" class ="button button-block button-positive" value="Send">
+
+			</form>
+			<ion-spinner ng-show="loading"></ion-spinner>
+			<div class="button button-block button-assertive"
+				 ng-show="error">
+				{{errorMessage}}
+			</div>
+
+			<div class="button button-block button-balanced"
+				 ng-show="success">
+				contacted TEMPO!
+			</div>
+
 		</center>
 		</div>
 	</ion-content>
