@@ -407,14 +407,23 @@ app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', func
 
        });
 
+        // Trying to grab the videoId...doesn't work, use service or something
+    $scope.currentCtrl.currentVideo = function($scope, $videoDetails) {
 
+        $scope.videoId = $videoDetails;
+    };
 
-}]);
-
-app.controller('videoCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state) {
-    if (!UserDetails.hasUser()) {
-        $state.go('SignIn');
-        console.log("no user");
+    $scope.doRefresh = function() {
+        $http.post('http://localhost/HubServices/GetCCCDetails.php')
+            .success(function (response) {
+                console.log("GetCCCDetails service response: " + response[0]['title']);
+                for(i = 0; i < response.length; i++)
+                    $scope.currentVideos[i]={title: response[i]['title'], artist:response[i]['artist'], id: response[i]['brightcove_id']};
+            })
+            .finally(function () {
+                // Stop the ion-refresher from spinning
+                $scope.$broadcast('scroll.refreshComplete');
+            });
     }
 }]);
 
@@ -424,6 +433,17 @@ app.controller('previousCtrl', ['$scope', 'UserDetails', '$state', function($sco
         console.log("no user");
     }
   console.log('previousCtrl');
+
+        // simple placeholder, waiting for previous table to pull from and format in view
+    $scope.previousVideos = [
+        { title: 'temp', id: 1 },
+        { title: 'temp', id: 2 },
+        { title: 'temp', id: 3 },
+        { title: 'temp', id: 4 },
+        { title: 'temp', id: 5 },
+        { title: 'temp', id: 6 }
+    ];
+
 }]);
 
 app.controller('clipsCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state){

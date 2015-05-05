@@ -1,11 +1,27 @@
 <ion-view view-title="Current Week">
     <ion-content>
+        <ion-refresher
+                pulling-text="Pull to refresh..."
+                on-refresh="doRefresh()">
+        </ion-refresher>
+
         <ion-list>
-            <ion-item ng-repeat="video in currentVideos" href="#/votingMenu/current/{{video.id}}">
-                <p>Can customize however</p>
-                Title: {{video.title}} <br>
-                Artist:{{video.artist}}
+
+            <ion-item ng-repeat="video in currentVideos">
+            <div class="row">
+                <div class="col">
+                    Title: {{video.title}} <br>
+                    Artist:{{video.artist}}
+                </div>
+                <div class="col">
+                    <a class="button icon-right ion-chevron-right button-calm" href="#/votingMenu/current/{{video.id}}">
+                        Watch Now</a>
+                </div>
+            </div>
+
+                <ion-radio ng-model="choice" ng-value="{{video.id}}">Vote for {{video.title}}</ion-radio>
             </ion-item>
+
             <button class ="button button-block button-positive" ng-click="currentCtrl.doStuff()">
                 doStuff
             </button>
