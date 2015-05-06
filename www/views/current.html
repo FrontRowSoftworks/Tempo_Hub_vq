@@ -10,12 +10,16 @@
             <ion-item ng-repeat="video in currentVideos">
             <div class="row">
                 <div class="col">
-                    Title: {{video.title}} <br>
-                    Artist:{{video.artist}}
+                    <b>Title:</b> {{video.title}}
+                    <b>Artist:</b>{{video.artist}}<br>
+                    <img src = "{{video.image_url}}" style ="width:75px;height:75px">
                 </div>
                 <div class="col">
-                    <a class="button icon-right ion-chevron-right button-calm" href="#/votingMenu/current/{{video.id}}">
-                        Watch Now</a>
+                    <!--<a class="button icon-right ion-chevron-right button-calm" href="#/votingMenu/current/{{video.id}}"><!--#/votingMenu/current/{{video.id}}
+                        Watch Now</a>-->
+                    <button class ="button button-positive" ng-click="currentCtrl.goToVideo(video)">
+                        Watch Now
+                    </button>
                 </div>
             </div>
 

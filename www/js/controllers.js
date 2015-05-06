@@ -391,7 +391,7 @@ app.controller('SignOutCtrl', ['$scope', 'UserDetails', function ($scope, UserDe
 
 }]);
 
-app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', function($scope, $http, UserDetails, $state){
+app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'CurrentVideo', function($scope, $http, UserDetails, $state, CurrentVideo){
     if (!UserDetails.hasUser()) {
         $state.go('SignIn');
         console.log("no user");
@@ -403,10 +403,18 @@ app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', func
        .success(function (response) {
          console.log("GetCCCDetails service response: " + response[0]['title']);
          for(i = 0; i < response.length; i++)
-         $scope.currentVideos[i]={title: response[i]['title'], artist:response[i]['artist'], id: response[i]['brightcove_id']}; //
+         $scope.currentVideos[i]={title: response[i]['title'],
+             artist:response[i]['artist'],
+             id: response[i]['brightcove_id'],
+             video_url: response[i]['video_url'],
+             image_url: (response[i]['image_url'] != null) ? response[i]['image_url'] : "http://img2.wikia.nocookie.net/__cb20130511180903/legendmarielu/images/b/b4/No_image_available.jpg"};
 
        });
+    $scope.currentCtrl.goToVideo = function(video){
+        CurrentVideo.id =video.id;
+        $state.go('votingMenu.single', {videoId: video.id});
 
+    }
         // Trying to grab the videoId...doesn't work, use service or something
     $scope.currentCtrl.currentVideo = function($scope, $videoDetails) {
 
@@ -427,6 +435,9 @@ app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', func
     }
 }]);
 
+app.controller('viewVideoCtrl', ['$scope', 'CurrentVideo', function($scope, CurrentVideo){
+    $scope.videoId = CurrentVideo.id;
+}]);
 app.controller('previousCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state){
     if (!UserDetails.hasUser()) {
         $state.go('SignIn');

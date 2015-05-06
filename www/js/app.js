@@ -97,7 +97,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 views: {
                     'votingMenuContent': {
                         templateUrl: "views/videoPage.html",
-                        controller: 'currentCtrl'
+                        controller: 'viewVideoCtrl'
                     }
                 }
             })
@@ -110,7 +110,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 }
             })
-
             .state('clipsMenu', {
                 url: '/clipsMenu',
                 abstract: true,
@@ -127,6 +126,26 @@ app.config(function($stateProvider, $urlRouterProvider) {
             });
     $urlRouterProvider.otherwise('/signIn');
     });
+app.service("UserQuestion", function UserQuestion(){
+    var UserQuestion = this;
+    UserQuestion.question="Default";
+    UserQuestion.email = "Default";
+
+    var reset = function () {
+        UserQuestion.question = "Default";
+        UserQuestion.email = "Default";
+    }
+});
+app.service("CurrentVideo", function CurrentVideo(){
+    var CurrentVideo = this;
+    CurrentVideo.title="Default";
+    CurrentVideo.id = "Default";
+/*
+    var reset = function () {
+        CurrentVideo.title="Default";
+        CurrentVideo.id = "Default";
+    }*/
+});
 app.service("UserQuestion", function UserQuestion(){
     var UserQuestion = this;
     UserQuestion.question="Default";
