@@ -4,32 +4,87 @@
                 pulling-text="Pull to refresh..."
                 on-refresh="doRefresh()">
         </ion-refresher>
+		<center>
+			<br ng-show="loading">
+			<ion-spinner ng-show="loading"></ion-spinner>
+		</center>
+        <ion-list ng-show="videosAvailable">
 
-        <ion-list>
+            <div ng-repeat="video in currentVideos">
+            <div class="ccc-container">
+				<div class="ccc-thumbnail-container">
+					<img class="ccc-thumbnail" src="{{video.thumbnail}}">
+				</div>
+				<div class="ccc-details-container">
+					<span class="ccc-details-text ccc-details-title">{{video.title}}</span>
+					<span class="ccc-details-text">{{video.artist}}</span>
+					<span class="ccc-details-text">({{video.country}})</span>
+				</div>
+				<div class="ccc-votes-container">
+					<span class="ccc-votes" ng-show="voted">{{video.votePercentage}}%</span>
+					<!--<ion-radio ng-model="choice" ng-value="{{video.id}}" ng-show="!voted"></ion-radio>-->
+				</div>
+				<!--<div class="ccc-vote-now">
 
-            <ion-item ng-repeat="video in currentVideos">
-            <div class="row">
-                <div class="col">
+				</div>-->
+
+
+
+
+                <!--<div class="col">
                     <b>Title:</b> {{video.title}}
                     <b>Artist:</b>{{video.artist}}<br>
                     <img src = "{{video.image_url}}" style ="width:75px;height:75px">
                 </div>
+                -->
+				<!--
                 <div class="col">
                     <!--<a class="button icon-right ion-chevron-right button-calm" href="#/votingMenu/current/{{video.id}}"><!--#/votingMenu/current/{{video.id}}
                         Watch Now</a>-->
+				<!--
                     <button class ="button button-positive" ng-click="currentCtrl.goToVideo(video)">
                         Watch Now
                     </button>
                 </div>
+				-->
+            </div>
             </div>
 
-                <ion-radio ng-model="choice" ng-value="{{video.id}}">Vote for {{video.title}}</ion-radio>
-            </ion-item>
+			<center>
+			<form name="votingForm" ng-submit="currentCtrl.vote()" ng-show="!voted" novalidate>
 
-            <button class ="button button-block button-positive" ng-click="currentCtrl.doStuff()">
-                doStuff
-            </button>
+				<label class = "item item-input dropDown">
+					<select  ng-model="currentCtrl.votedVideo"
+							 ng-options="video.title for video in currentVideos"
+							 name="votedVideo"
+							 ng-required="true">
+						<option value="">pick a video</option>
+					</select>
+				</label>
+
+				<div ng-messages="votingForm.votedVideo.$error" ng-if="votingForm.votedVideo.$touched">
+					<p class="form-error" ng-message="required">you must pick a video!</p>
+				</div>
+
+				<input type="submit" ng-disabled="!votingForm.$valid" class ="button button-block button-positive" value="Vote Now">
+
+			</form>
+
+				<ion-spinner ng-show="votingLoading"></ion-spinner>
+				<div class="button button-block button-assertive"
+					 ng-show="error">
+					{{errorMessage}}
+				</div>
+
+				<div class="button button-block button-balanced"
+					 ng-show="success">
+					your vote was cast!
+				</div>
+			</center>
         </ion-list>
+		<center>
+			<h4 ng-show="!videosAvailable">Error retrieving videos, please try again!</h4>
+		</center>
     </ion-content>
 </ion-view>
 

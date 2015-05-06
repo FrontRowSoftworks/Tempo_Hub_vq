@@ -30,11 +30,9 @@ app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', functi
 
 app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', function($scope, $http, $state, UserDetails) {
     if(UserDetails.hasUser()) {
-        console.log("UD at SignInCtrl: " + UserDetails.email + ", " + UserDetails.mobileNumber);
         $state.go('mainMenu.mainPage');
     } else {
-        console.log("UserDetails.reset called from SignInCtrl");
-        UserDetails.reset();
+        console.log("UserDetails.reset called from SignInCtrl because no user was found");
     }
 
     $scope.signInCtrl = {};
@@ -42,7 +40,6 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', functio
       $scope.loading = true;
       var email = $scope.email;
       var pw = $scope.pw;
-      console.log(email);
 
         $http.post('http://localhost/HubServices/SignIn.php', { 'email': email, 'pw': pw})
             .success(function(response) {
@@ -50,6 +47,7 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', functio
                 if (response == 1) {
                   $scope.error = false;
                   $http.post('http://localhost/HubServices/GetUser.php', { 'email': email }).success(function(response) {
+                      console.log("ts from service: " + response.vote_ts);
                       UserDetails.set(email, response.mobile, response.vote_ts);
                       console.log("UserDetails.set called from SignInCtrl");
                   });
@@ -386,9 +384,19 @@ app.controller('SignOutCtrl', ['$scope', 'UserDetails', function ($scope, UserDe
     $scope.signOutCtrl = {};
     $scope.signOutCtrl.signOut = function () {
         UserDetails.reset();
-        console.log("UD after SignOut: " + UserDetails.email + ", " + UserDetails.mobileNumber);
+    }
+}]);
+
+app.controller('votingMenuCtrl', ['$scope', '$state', 'UserDetails', function($scope, $state, UserDetails){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
     }
 
+    $scope.votingMenuCtrl = {};
+    $scope.votingMenuCtrl.goToCurrent = function () {
+        $state.go('votingMenu.current');
+    }
 }]);
 
 app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'CurrentVideo', function($scope, $http, UserDetails, $state, CurrentVideo){
@@ -397,42 +405,138 @@ app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
         console.log("no user");
     }
 
+    $scope.loading = true;
+    $scope.videosAvailable = true;
+    $scope.totalVotes;
+    $scope.votingLoading = false;
+    $scope.success = false;
+    $scope.error = false;
+
+
     $scope.currentCtrl = {};
     $scope.currentVideos = [];
-        $http.post('http://localhost/HubServices/GetCCCDetails.php')
-       .success(function (response) {
-         console.log("GetCCCDetails service response: " + response[0]['title']);
-         for(i = 0; i < response.length; i++)
-         $scope.currentVideos[i]={title: response[i]['title'],
-             artist:response[i]['artist'],
-             id: response[i]['brightcove_id'],
-             video_url: response[i]['video_url'],
-             image_url: (response[i]['image_url'] != null) ? response[i]['image_url'] : "http://img2.wikia.nocookie.net/__cb20130511180903/legendmarielu/images/b/b4/No_image_available.jpg"};
 
-       });
+    $scope.currentCtrl.hasVoted = function() {
+        var midnight = new Date();
+        midnight.setHours(0,0,0,0);
+        var lastVoted = new Date(Date.parse(UserDetails.lastVotedTime));
+        return UserDetails.lastVotedTime != null ? lastVoted > midnight : false;
+    }
+
+    $scope.voted = $scope.currentCtrl.hasVoted();
+    console.log("voted? " + $scope.voted);
+
+    $scope.currentCtrl.vote = function() {
+        $scope.votingLoading = true;
+        console.log("voted for: " + $scope.currentCtrl.votedVideo.sorting);
+        var timestamp = new Date().toString();
+        UserDetails.setLastVotedTime(timestamp);
+        console.log("vote timestamp: " + UserDetails.lastVotedTime);
+        $http.post('http://localhost/HubServices/CastCCCVote.php', {
+            'email': UserDetails.email,
+            'timestamp': timestamp,
+            'sort': $scope.currentCtrl.votedVideo.sorting
+        }).success(function (response) {
+            $scope.votingLoading = false;
+                console.log("CastCCCVote response: " + response);
+                if (response > 0) {
+                    $scope.success = true;
+                    $scope.error = false;
+                    $scope.voted = $scope.currentCtrl.hasVoted();
+                } else {
+                    $scope.errorMessage = "error contacting server, try again!"
+                    $scope.error = true;
+                    $scope.success = false;
+                }
+            })
+            .error(function(data, status, headers, config) {
+                $scope.votingLoading = false;
+                $scope.errorMessage = "error contacting server, try again!"
+                $scope.error = true;
+
+            });
+    }
+
+    $scope.currentCtrl.getVideos = function (refresh) {
+        // get total votes
+        console.log("trying to get current votes");
+        $http.post('http://localhost/HubServices/GetCCCVotesCurrent.php')
+            .success(function (response) {
+                console.log("total votes: " + response);
+                if (!isNaN(response) && response > 0) {
+                    $scope.totalVotes = response;
+                } else $scope.videosAvailable = false;
+            })
+            .error(function(data, status, headers, config) {
+                $scope.videosAvailable = false;
+                $scope.loading = false;
+            });
+
+        // get videos
+        if ($scope.videosAvailable) {
+            $http.post('http://localhost/HubServices/GetCCCVotingCurrent.php')
+                .success(function (response) {
+                    $scope.loading = false;
+                    for (var i = 0; i < response.length; i++) {
+                        $scope.currentVideos[i] = {
+                            sorting: response[i]['sorting'],
+                            title: response[i]['title'],
+                            artist: response[i]['artist'],
+                            country: response[i]['country'],
+                            id: response[i]['brightcove_id'],
+                            video_still: response[i]['video_still_url'],
+                            thumbnail: (response[i]['thumbnail_url'] != null) ?
+                                response[i]['thumbnail_url'] :
+                                "img/default-thumbnail.png",
+                            votes: response[i]['votes'],
+                            votePercentage: ((response[i]['votes'] / $scope.totalVotes) * 100).toFixed(1)
+                        }
+                        console.log("video" + i + " has votes: " + $scope.currentVideos[i].votes);
+                        console.log("video" + i + " has vote percent: " + $scope.currentVideos[i].votePercentage);
+                    }
+                })
+                .error(function (data, status, headers, config) {
+                    $scope.loading = false;
+                    $scope.videosAvailable = false;
+                })
+                .finally(function () {
+                    if (refresh) {
+                        // Stop the ion-refresher from spinning
+                        $scope.$broadcast('scroll.refreshComplete');
+                    }
+                });
+        }
+
+    }
+
+    $scope.currentCtrl.getVideos(false);
+    //$filter('orderBy')($scope.currentVideos, -votes);
+
+    /*
     $scope.currentCtrl.goToVideo = function(video){
-        CurrentVideo.id =video.id;
-        $state.go('votingMenu.single', {videoId: video.id});
+        *//*CurrentVideo.id =video.id;
+        $state.go('votingMenu.single', {videoId: video.id});*//*
 
     }
         // Trying to grab the videoId...doesn't work, use service or something
     $scope.currentCtrl.currentVideo = function($scope, $videoDetails) {
 
         $scope.videoId = $videoDetails;
-    };
+    };*/
 
     $scope.doRefresh = function() {
-        $http.post('http://localhost/HubServices/GetCCCDetails.php')
-            .success(function (response) {
-                console.log("GetCCCDetails service response: " + response[0]['title']);
-                for(i = 0; i < response.length; i++)
-                    $scope.currentVideos[i]={title: response[i]['title'], artist:response[i]['artist'], id: response[i]['brightcove_id']};
-            })
-            .finally(function () {
-                // Stop the ion-refresher from spinning
-                $scope.$broadcast('scroll.refreshComplete');
-            });
-    }
+            $scope.currentCtrl.getVideos(true);
+            $scope.videosAvailable = true;
+            $scope.votingLoading = false;
+            $scope.success = false;
+            $scope.error = false;
+    };
+
+    $scope.$on('$locationChangeStart', function( event ) {
+        $scope.success = false;
+        $scope.error = false;
+
+    });
 }]);
 
 app.controller('viewVideoCtrl', ['$scope', 'CurrentVideo', function($scope, CurrentVideo){
