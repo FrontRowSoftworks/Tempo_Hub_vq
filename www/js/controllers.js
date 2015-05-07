@@ -41,13 +41,13 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', functio
       var email = $scope.email;
       var pw = $scope.pw;
 
-        $http.post('http://localhost/HubServices/SignIn.php', { 'email': email, 'pw': pw})
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/SignIn.php', { 'email': email, 'pw': pw})
             .success(function(response) {
                 $scope.loading = false;
                 if (response == 1) {
                   $scope.error = false;
                     console.log(email);
-                  $http.post('http://localhost/HubServices/GetUser.php', { 'email': email }).success(function(response) {
+                  $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetUser.php', { 'email': email }).success(function(response) {
                       console.log("ts from service: " + response.vote_ts);
                       UserDetails.set(email, response.mobile, response.vote_ts);
                       console.log("UserDetails.set called from SignInCtrl");
@@ -80,7 +80,7 @@ app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $htt
       $scope.loading = true;
       $scope.userDevice = ionic.Platform.platform();
 
-      $http.post('http://localhost/HubServices/SignUp.php', {
+      $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/SignUp.php', {
           'email': $scope.email,
           'pw': $scope.password,
           'mobileNumber': $scope.mobileNumber,
@@ -116,7 +116,7 @@ app.controller('ForgotPasswordCtrl', ['$scope', '$state', '$http', 'UserQuestion
   $scope.forgotPasswordCtrl = {};
   $scope.forgotPasswordCtrl.getQuestion = function() {
       $scope.loading = true;
-      $http.post('http://localhost/HubServices/GetSecurityQuestion.php', { 'email': $scope.email })
+      $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetSecurityQuestion.php', { 'email': $scope.email })
           .success(function(response) {
               $scope.loading = false;
               if (response.trim().length > 0) {
@@ -145,7 +145,7 @@ app.controller('SecurityQuestionCtrl',['$state', '$scope', 'UserQuestion', '$htt
   $scope.question = UserQuestion.question;
   $scope.securityQuestionCtrl.answerQuestion = function(){
       $scope.loading = true;
-      $http.post('http://localhost/HubServices/AnswerSecurityQuestion.php', { 'email': UserQuestion.email, 'answer': $scope.answer})
+      $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/AnswerSecurityQuestion.php', { 'email': UserQuestion.email, 'answer': $scope.answer})
           .success(function(response) {
               $scope.loading = false;
                 if (response == 1) {
@@ -172,7 +172,7 @@ app.controller('ResetPasswordCtrl',['$state', '$scope', 'UserQuestion', '$http',
   $scope.resetPasswordCtrl = {};
   $scope.resetPasswordCtrl.resetPassword = function() {
     $scope.loading = true;
-    $http.post('http://localhost/HubServices/ResetPassword.php', { 'email': UserQuestion.email, 'pw': $scope.newPassword}).success(function(response) {
+    $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/ResetPassword.php', { 'email': UserQuestion.email, 'pw': $scope.newPassword}).success(function(response) {
         if (response == 1) {
             $scope.loading = false;
             $scope.success = true;
@@ -247,7 +247,7 @@ app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$state', '$http', f
         console.log("email in input: " + $scope.user.email);
         $scope.oldEmail = UserDetails.email;
 
-       $http.post('http://localhost/HubServices/EditDetails.php', {
+       $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/EditDetails.php', {
                 'oldEmail': $scope.oldEmail,
                 'email': $scope.user.email,
                 'mobileNumber': $scope.user.mobileNumber,
@@ -289,7 +289,7 @@ app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$state', '$http', f
         $scope.passwordLoading = true;
         $scope.currentEmail = UserDetails.email;
         console.log($scope.currentEmail);
-        $http.post('http://localhost/HubServices/ChangePassword.php', {
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/ChangePassword.php', {
             'email': $scope.currentEmail,
             'currentPassword': $scope.currentPassword,
             'newPassword': $scope.newPassword
@@ -345,7 +345,7 @@ app.controller('ContactCtrl', ['$scope', '$http', 'UserDetails', '$state', funct
     $scope.contactCtrl = {};
     $scope.contactCtrl.contact = function () {
         $scope.loading = true;
-        $http.post('http://localhost/HubServices/Contact.php', {
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/Contact.php', {
                 'email': UserDetails.email,
                 'subject': $scope.subject.name,
                 'content': $scope.content
@@ -403,6 +403,10 @@ app.controller('votingMenuCtrl', ['$scope', '$state', 'UserDetails', function($s
     $scope.votingMenuCtrl.goToCurrent = function () {
         $state.go('votingMenu.current');
     }
+
+    $scope.votingMenuCtrl.goToPrevious = function () {
+        $state.go('votingMenu.previous');
+    }
 }]);
 
 app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'CurrentVideo', function($scope, $http, UserDetails, $state, CurrentVideo){
@@ -438,7 +442,7 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
         var timestamp = new Date().toString();
         UserDetails.setLastVotedTime(timestamp);
         console.log("vote timestamp: " + UserDetails.lastVotedTime);
-        $http.post('http://localhost/HubServices/CastCCCVote.php', {
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/CastCCCVote.php', {
             'email': UserDetails.email,
             'timestamp': timestamp,
             'sort': $scope.currentCtrl.votedVideo.sorting
@@ -464,7 +468,7 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
 
     $scope.totalVotes;
     $scope.currentCtrl.getTotalVotes = function () {
-        $http.post('http://localhost/HubServices/GetCCCVotesCurrent.php')
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetCCCVotesCurrent.php')
             .success(function (response) {
                 console.log("total votes: " + response);
                 if (!isNaN(response) && response > 0) {
@@ -484,7 +488,7 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
         console.log("voted? " + $scope.voted);
 
         if ($scope.videosAvailable) {
-            $http.post('http://localhost/HubServices/GetCCCVotingCurrent.php')
+            $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetCCCVotingCurrent.php')
                 .success(function (response) {
                     $scope.loading = false;
                     for (var i = 0; i < response.length; i++) {
@@ -552,6 +556,8 @@ app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', func
         console.log("no user");
     }
 
+    console.log("in previous ctrl");
+
     $scope.loading = true;
     $scope.videosAvailable = true;
 
@@ -563,7 +569,7 @@ app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', func
     $scope.pollName;
     $scope.previousVotes;
     $scope.previousCtrl.getDetails = function () {
-        $http.post('http://localhost/HubServices/GetCCCWinnerPrevious.php')
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetCCCWinnerPrevious.php')
             .success(function (response) {
                 console.log("previous details response: " + response);
                 var details = response.split(",");
@@ -583,14 +589,14 @@ app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', func
                 $scope.videosAvailable = false;
                 $scope.loading = false;
             });
+        setTimeout($scope.previousCtrl.getVideos, 500);
     }
 
     $scope.previousCtrl.getVideos = function () {
         if ($scope.videosAvailable) {
-            $http.post('http://localhost/HubServices/GetCCCVotingPrevious.php')
+            $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetCCCVotingPrevious.php')
                 .success(function (response) {
                     $scope.loading = false;
-
                     for (var i = 0; i < response.length; i++) {
                         $scope.previousVideos[i] = {
                             sorting: response[i]['sorting'],
@@ -616,11 +622,16 @@ app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', func
                     $scope.loading = false;
                     $scope.videosAvailable = false;
                 });
+            if ($scope.previousVideos[0] != null) {
+                if (isNaN($scope.previousVideos[0].votePercentage)) {
+                    $scope.previousCtrl.getVideos();
+                }
+            }
+
         }
 
     }
     $scope.previousCtrl.getDetails();
-    setTimeout($scope.previousCtrl.getVideos, 100);
 }]);
 
 app.controller('clipsCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state){
