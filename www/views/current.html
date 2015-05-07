@@ -1,5 +1,6 @@
 <ion-view view-title="Current Week">
-    <ion-content>
+    <ion-content >
+		<div ng-controller="CurrentCtrl">
         <ion-refresher
                 pulling-text="Pull to refresh..."
                 on-refresh="doRefresh()">
@@ -13,7 +14,7 @@
             <div ng-repeat="video in currentVideos">
             <div class="ccc-container">
 				<div class="ccc-thumbnail-container">
-					<img class="ccc-thumbnail" src="{{video.thumbnail}}">
+					<img class="ccc-thumbnail" ng-src="{{video.thumbnail}}">
 				</div>
 				<div class="ccc-details-container">
 					<span class="ccc-details-text ccc-details-title">{{video.title}}</span>
@@ -85,6 +86,7 @@
 		<center>
 			<h4 ng-show="!videosAvailable">Error retrieving videos, please try again!</h4>
 		</center>
+		</div>
     </ion-content>
 </ion-view>
 

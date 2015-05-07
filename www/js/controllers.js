@@ -46,6 +46,7 @@ app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', functio
                 $scope.loading = false;
                 if (response == 1) {
                   $scope.error = false;
+                    console.log(email);
                   $http.post('http://localhost/HubServices/GetUser.php', { 'email': email }).success(function(response) {
                       console.log("ts from service: " + response.vote_ts);
                       UserDetails.set(email, response.mobile, response.vote_ts);
@@ -394,12 +395,17 @@ app.controller('votingMenuCtrl', ['$scope', '$state', 'UserDetails', function($s
     }
 
     $scope.votingMenuCtrl = {};
+
+    $scope.votingMenuCtrl.goToHome = function () {
+        $state.go('mainMenu.mainPage');
+    }
+
     $scope.votingMenuCtrl.goToCurrent = function () {
         $state.go('votingMenu.current');
     }
 }]);
 
-app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'CurrentVideo', function($scope, $http, UserDetails, $state, CurrentVideo){
+app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'CurrentVideo', function($scope, $http, UserDetails, $state, CurrentVideo){
     if (!UserDetails.hasUser()) {
         $state.go('SignIn');
         console.log("no user");
@@ -407,11 +413,9 @@ app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
 
     $scope.loading = true;
     $scope.videosAvailable = true;
-    $scope.totalVotes;
     $scope.votingLoading = false;
     $scope.success = false;
     $scope.error = false;
-
 
     $scope.currentCtrl = {};
     $scope.currentVideos = [];
@@ -419,12 +423,14 @@ app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
     $scope.currentCtrl.hasVoted = function() {
         var midnight = new Date();
         midnight.setHours(0,0,0,0);
-        var lastVoted = new Date(Date.parse(UserDetails.lastVotedTime));
-        return UserDetails.lastVotedTime != null ? lastVoted > midnight : false;
+        var lastVoted;
+        if (UserDetails.lastVotedTime != null) {
+            lastVoted = new Date(Date.parse(UserDetails.lastVotedTime));
+        } else {
+            lastVoted = 0;
+        }
+        return lastVoted != 0 ? lastVoted > midnight : false;
     }
-
-    $scope.voted = $scope.currentCtrl.hasVoted();
-    console.log("voted? " + $scope.voted);
 
     $scope.currentCtrl.vote = function() {
         $scope.votingLoading = true;
@@ -457,9 +463,8 @@ app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
             });
     }
 
-    $scope.currentCtrl.getVideos = function (refresh) {
-        // get total votes
-        console.log("trying to get current votes");
+    $scope.totalVotes;
+    $scope.currentCtrl.getTotalVotes = function () {
         $http.post('http://localhost/HubServices/GetCCCVotesCurrent.php')
             .success(function (response) {
                 console.log("total votes: " + response);
@@ -471,8 +476,14 @@ app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
                 $scope.videosAvailable = false;
                 $scope.loading = false;
             });
+    }
 
-        // get videos
+    $scope.currentCtrl.getVideos = function (refresh) {
+        $scope.currentCtrl.getTotalVotes();
+        console.log("getting current videos");
+        $scope.voted = $scope.currentCtrl.hasVoted();
+        console.log("voted? " + $scope.voted);
+
         if ($scope.videosAvailable) {
             $http.post('http://localhost/HubServices/GetCCCVotingCurrent.php')
                 .success(function (response) {
@@ -491,8 +502,6 @@ app.controller('currentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
                             votes: response[i]['votes'],
                             votePercentage: ((response[i]['votes'] / $scope.totalVotes) * 100).toFixed(1)
                         }
-                        console.log("video" + i + " has votes: " + $scope.currentVideos[i].votes);
-                        console.log("video" + i + " has vote percent: " + $scope.currentVideos[i].votePercentage);
                     }
                 })
                 .error(function (data, status, headers, config) {

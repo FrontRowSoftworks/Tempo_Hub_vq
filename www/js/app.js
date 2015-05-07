@@ -84,11 +84,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 templateUrl: 'views/votingMenu.html'
             })
             .state('votingMenu.current', {
+                cache: false,
                 url: '/current',
                 views: {
                     'votingMenuContent': {
                         templateUrl: 'views/current.html',
-                        controller: 'currentCtrl'
+                        controller: 'CurrentCtrl'
                     }
                 }
             })
