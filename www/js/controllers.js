@@ -503,6 +503,7 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
                             votePercentage: ((response[i]['votes'] / $scope.totalVotes) * 100).toFixed(1)
                         }
                     }
+                    $scope.videosAvailable = true;
                 })
                 .error(function (data, status, headers, config) {
                     $scope.loading = false;
@@ -521,6 +522,12 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
     $scope.currentCtrl.getVideos(false);
     //$filter('orderBy')($scope.currentVideos, -votes);
 
+    $scope.currentCtrl.goToVideo = function(video){
+        CurrentVideo.set(video.id);
+        console.log(CurrentVideo.id);
+        $state.go('votingMenu.single', {videoId: video.id});
+
+    }
     /*
     $scope.currentCtrl.goToVideo = function(video){
         *//*CurrentVideo.id =video.id;
@@ -549,6 +556,7 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
 }]);
 
 app.controller('viewVideoCtrl', ['$scope', 'CurrentVideo', function($scope, CurrentVideo){
+    console.log(CurrentVideo.id);
     $scope.videoId = CurrentVideo.id;
 }]);
 app.controller('previousCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state){

@@ -14,7 +14,7 @@
             <div ng-repeat="video in currentVideos">
             <div class="ccc-container">
 				<div class="ccc-thumbnail-container">
-					<img class="ccc-thumbnail" ng-src="{{video.thumbnail}}">
+                    <img class="ccc-thumbnail" src="{{video.thumbnail}}" ng-click ="currentCtrl.goToVideo(video)">
 				</div>
 				<div class="ccc-details-container">
 					<span class="ccc-details-text ccc-details-title">{{video.title}}</span>

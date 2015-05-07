@@ -100,6 +100,14 @@ app.config(function($stateProvider, $urlRouterProvider) {
                         templateUrl: "views/videoPage.html",
                         controller: 'viewVideoCtrl'
                     }
+                },
+                onEnter: function(){
+                    console.log("Hi there");
+                    setTimeout("brightcove.createExperiences()", 1);
+
+                },
+                onExit: function(){
+                    console.log("goodBye!!!");
                 }
             })
             .state('votingMenu.previous', {
@@ -127,16 +135,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
             });
     $urlRouterProvider.otherwise('/signIn');
     });
-app.service("CurrentVideo", function CurrentVideo(){
-    var CurrentVideo = this;
-    CurrentVideo.title="Default";
-    CurrentVideo.id = "Default";
-/*
-    var reset = function () {
-        CurrentVideo.title="Default";
-        CurrentVideo.id = "Default";
-    }*/
-});
+
 app.service("UserQuestion", function UserQuestion(){
     var UserQuestion = this;
     UserQuestion.question="Default";
@@ -199,4 +198,35 @@ app.factory("UserDetails", function () {
     }
 
     return UserDetails;
+});
+/*app.service("CurrentVideo", function CurrentVideo(){
+ var CurrentVideo = this;
+ CurrentVideo.id = "Default";
+
+
+ var reset = function () {
+ CurrentVideo.title="Default";
+ CurrentVideo.id = "Default";
+ }
+ });*/
+app.factory("CurrentVideo", function () {
+    var CurrentVideo  = {
+        id: 0
+    }
+
+    CurrentVideo.set = function(id) {
+        console.log("CurrentVideo.set called");
+        CurrentVideo.setId(id);
+        console.log(id);
+    }
+
+    CurrentVideo.setId = function(id) {
+        window.localStorage['id'] = id;
+        CurrentVideo.id = window.localStorage['id'];
+    }
+
+    CurrentVideo.reset = function () {
+        CurrentVideo.set(0);
+    }
+    return CurrentVideo;
 });

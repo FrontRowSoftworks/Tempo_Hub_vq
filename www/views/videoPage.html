@@ -1,7 +1,7 @@
 <ion-view view-title="Video">
     <!--<ion-content>-->
         <!-- Start of Brightcove Player -->
-        {{videoId}}
+        <br/><br/>
 
 
         <!--
@@ -9,19 +9,19 @@
         found at https://accounts.brightcove.com/en/terms-and-conditions/.
         -->
 
-        <script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>
+
 
         <object id="myExperience4150029284001" class="BrightcoveExperience">
             <param name="bgcolor" value="#FFFFFF" />
-            <param name="width" value="480" />
-            <param name="height" value="270" />
+            <param name="width" value="800" />
+            <param name="height" value="400" />
             <param name="playerID" value="4149335643001" />
             <param name="playerKey" value="AQ~~,AAAAAAr-RdE~,IgS0kIfymb2990T3T5bZbH5jC8gyDjak" />
             <param name="isVid" value="true" />
             <param name="isUI" value="true" />
             <param name="dynamicStreaming" value="true" />
 
-            <param name="@videoPlayer" value="4150029284001" />
+            <param name="@videoPlayer" value="{{videoId}}" />
         </object>
 
         <!--
