@@ -459,7 +459,6 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
                 $scope.votingLoading = false;
                 $scope.errorMessage = "error contacting server, try again!"
                 $scope.error = true;
-
             });
     }
 
@@ -503,7 +502,6 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
                             votePercentage: ((response[i]['votes'] / $scope.totalVotes) * 100).toFixed(1)
                         }
                     }
-                    $scope.videosAvailable = true;
                 })
                 .error(function (data, status, headers, config) {
                     $scope.loading = false;
@@ -522,23 +520,12 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
     $scope.currentCtrl.getVideos(false);
     //$filter('orderBy')($scope.currentVideos, -votes);
 
-    $scope.currentCtrl.goToVideo = function(video){
+    $scope.currentCtrl.goToVideo = function(video) {
         CurrentVideo.set(video.id);
         console.log(CurrentVideo.id);
         $state.go('votingMenu.single', {videoId: video.id});
 
     }
-    /*
-    $scope.currentCtrl.goToVideo = function(video){
-        *//*CurrentVideo.id =video.id;
-        $state.go('votingMenu.single', {videoId: video.id});*//*
-
-    }
-        // Trying to grab the videoId...doesn't work, use service or something
-    $scope.currentCtrl.currentVideo = function($scope, $videoDetails) {
-
-        $scope.videoId = $videoDetails;
-    };*/
 
     $scope.doRefresh = function() {
             $scope.currentCtrl.getVideos(true);
@@ -559,23 +546,81 @@ app.controller('viewVideoCtrl', ['$scope', 'CurrentVideo', function($scope, Curr
     console.log(CurrentVideo.id);
     $scope.videoId = CurrentVideo.id;
 }]);
-app.controller('previousCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state){
+app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', function($scope, UserDetails, $state, $http){
     if (!UserDetails.hasUser()) {
         $state.go('SignIn');
         console.log("no user");
     }
-  console.log('previousCtrl');
 
-        // simple placeholder, waiting for previous table to pull from and format in view
-    $scope.previousVideos = [
-        { title: 'temp', id: 1 },
-        { title: 'temp', id: 2 },
-        { title: 'temp', id: 3 },
-        { title: 'temp', id: 4 },
-        { title: 'temp', id: 5 },
-        { title: 'temp', id: 6 }
-    ];
+    $scope.loading = true;
+    $scope.videosAvailable = true;
 
+    $scope.previousCtrl = {};
+    $scope.previousVideos = [];
+
+    $scope.winningVideoSort;
+    $scope.spotlight = true;
+    $scope.pollName;
+    $scope.previousVotes;
+    $scope.previousCtrl.getDetails = function () {
+        $http.post('http://localhost/HubServices/GetCCCWinnerPrevious.php')
+            .success(function (response) {
+                console.log("previous details response: " + response);
+                var details = response.split(",");
+                $scope.winningVideoSort = details[0];
+                if ($scope.winningVideoSort < 1) {
+                    $scope.spotlight = false;
+                }
+                console.log("winning vid sort: " + $scope.winningVideoSort);
+                $scope.pollName = details[1] + details[2];
+                console.log("poll name: " + $scope.pollName);
+                if (!isNaN(details[3]) && details[3] > 0) {
+                    $scope.previousVotes = details[3];
+                    console.log("previous total votes: " + $scope.previousVotes);
+                } else $scope.videosAvailable = false;
+            })
+            .error(function(data, status, headers, config) {
+                $scope.videosAvailable = false;
+                $scope.loading = false;
+            });
+    }
+
+    $scope.previousCtrl.getVideos = function () {
+        if ($scope.videosAvailable) {
+            $http.post('http://localhost/HubServices/GetCCCVotingPrevious.php')
+                .success(function (response) {
+                    $scope.loading = false;
+
+                    for (var i = 0; i < response.length; i++) {
+                        $scope.previousVideos[i] = {
+                            sorting: response[i]['sorting'],
+                            title: response[i]['title'],
+                            artist: response[i]['artist'],
+                            country: response[i]['country'],
+                            id: response[i]['brightcove_id'],
+                            video_still: response[i]['video_still_url'],
+                            thumbnail: (response[i]['thumbnail_url'] != null) ?
+                                response[i]['thumbnail_url'] :
+                                "img/default-thumbnail.png",
+                            votes: response[i]['votes'],
+                            votePercentage: ((response[i]['votes'] / $scope.previousVotes) * 100).toFixed(1)
+                        }
+                        if (($scope.previousVideos[i].sorting == $scope.winningVideoSort)
+                            && ($scope.previousVideos[i].video_still == null)) {
+                            $scope.spotlight = false;
+                        }
+
+                    }
+                })
+                .error(function (data, status, headers, config) {
+                    $scope.loading = false;
+                    $scope.videosAvailable = false;
+                });
+        }
+
+    }
+    $scope.previousCtrl.getDetails();
+    setTimeout($scope.previousCtrl.getVideos, 100);
 }]);
 
 app.controller('clipsCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state){

@@ -1,17 +1,42 @@
 <ion-view view-title="Previous Week">
     <ion-content>
-       <!-- <ion-refresher
-                pulling-text="Pull to refresh..."
-                on-refresh="doRefresh()">
-        </ion-refresher> -->
+		<div ng-controller="CurrentCtrl">
+		<center>
+			<br ng-show="loading">
+			<ion-spinner ng-show="loading"></ion-spinner>
+		</center>
+		<ion-list ng-show="videosAvailable">
 
-        <ion-list>
-            <ion-item ng-repeat="video in previousVideos">
+			<div ng-repeat="video in previousVideos" ng-if="video.sorting == winningVideoSort && spotlight">
+				<div class="ccc-spotlight-container">
+					<center>
+						<img class="ccc-spotlight-image" ng-src="{{video.thumbnail}}" ng-click ="previousCtrl.goToVideo(video)">
+						<span class="ccc-spotlight-votes">{{video.votePercentage}}%</span>
+						<span class="ccc-spotlight-details-title">{{video.title}}</span>
+						<span class="ccc-spotlight-details-text">{{video.artist}}</span>
+						<span class="ccc-spotlight-details-text">({{video.country}})</span>
+					</center>
+				</div>
+			</div>
+			<div ng-repeat="video in previousVideos" ng-if="!spotlight || (video.sorting != winningVideoSort && spotlight)">
+				<div class="ccc-container">
+					<div class="ccc-thumbnail-container">
+						<img class="ccc-thumbnail" ng-src="{{video.thumbnail}}" ng-click ="previousCtrl.goToVideo(video)">
+					</div>
+					<div class="ccc-details-container">
+						<span class="ccc-details-text ccc-details-title">{{video.title}}</span>
+						<span class="ccc-details-text">{{video.artist}}</span>
+						<span class="ccc-details-text">({{video.country}})</span>
+					</div>
+					<div class="ccc-votes-container">
+						<span class="ccc-votes">{{video.votePercentage}}%</span>
+					</div>
+				</div>
+			</div>
+			<center>
+				<h4 ng-show="!videosAvailable">Error retrieving videos, please try again!</h4>
+			</center>
+			</div>
 
-                <!-- ng-order by results, treat first special -->
-                    <p>Results: </p>
-                    Title: {{video.title}}
-            </ion-item>
-        </ion-list>
-    </ion-content>
+	</ion-content>
 </ion-view>

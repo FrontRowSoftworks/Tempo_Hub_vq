@@ -111,11 +111,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 }
             })
             .state('votingMenu.previous', {
+                cache: false,
                 url: '/previous',
                 views: {
                     'votingMenuContent': {
                         templateUrl: 'views/previous.html',
-                        controller: 'previousCtrl'
+                        controller: 'PreviousCtrl'
                     }
                 }
             })
