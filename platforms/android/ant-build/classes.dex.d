@@ -6,4 +6,14 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/com/ionicframework/tempohubv1167893/R.class \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/com/ionicframework/tempohubv1167893/R$string.class \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/com/ionicframework/tempohubv1167893/R$xml.class \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/org/apache/cordova/splashscreen/SplashScreen$2.class \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/org/apache/cordova/splashscreen/SplashScreen$1.class \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/org/apache/cordova/splashscreen/SplashScreen$6.class \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/org/apache/cordova/splashscreen/SplashScreen$7.class \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/org/apache/cordova/splashscreen/SplashScreen$6$1.class \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/org/apache/cordova/splashscreen/SplashScreen.class \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/org/apache/cordova/splashscreen/SplashScreen$5$1.class \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/org/apache/cordova/splashscreen/SplashScreen$5.class \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/org/apache/cordova/splashscreen/SplashScreen$4.class \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/classes/org/apache/cordova/splashscreen/SplashScreen$3.class \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/dexedLibs/classes-055b2410ae6d0aef52d2e03410f3410b.jar \

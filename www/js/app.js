@@ -1,5 +1,5 @@
 
-var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers', 'ngMessages'])//, 'TempoHub.controllers', 'TempoHub.services'])
+var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers', 'ngMessages', 'ngCordova'])
 
 /*app.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -14,7 +14,6 @@ var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers', 'ngMessag
     }
   });
 });*/
-
 
 app.config(function($stateProvider, $urlRouterProvider) {
 

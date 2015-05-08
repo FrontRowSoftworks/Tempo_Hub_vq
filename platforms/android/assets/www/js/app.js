@@ -1,5 +1,5 @@
 
-var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers', 'ngMessages'])//, 'TempoHub.controllers', 'TempoHub.services'])
+var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers', 'ngMessages', 'ngCordova'])
 
 /*app.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -14,7 +14,6 @@ var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers', 'ngMessag
     }
   });
 });*/
-
 
 app.config(function($stateProvider, $urlRouterProvider) {
 
@@ -84,11 +83,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 templateUrl: 'views/votingMenu.html'
             })
             .state('votingMenu.current', {
+                cache: false,
                 url: '/current',
                 views: {
                     'votingMenuContent': {
                         templateUrl: 'views/current.html',
-                        controller: 'currentCtrl'
+                        controller: 'CurrentCtrl'
                     }
                 }
             })
@@ -97,20 +97,28 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 views: {
                     'votingMenuContent': {
                         templateUrl: "views/videoPage.html",
-                        controller: 'currentCtrl'
+                        controller: 'viewVideoCtrl'
                     }
+                },
+                onEnter: function(){
+                    console.log("Hi there");
+                    setTimeout("brightcove.createExperiences()", 1);
+
+                },
+                onExit: function(){
+                    console.log("goodBye!!!");
                 }
             })
             .state('votingMenu.previous', {
+                cache: false,
                 url: '/previous',
                 views: {
                     'votingMenuContent': {
                         templateUrl: 'views/previous.html',
-                        controller: 'previousCtrl'
+                        controller: 'PreviousCtrl'
                     }
                 }
             })
-
             .state('clipsMenu', {
                 url: '/clipsMenu',
                 abstract: true,
@@ -127,6 +135,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
             });
     $urlRouterProvider.otherwise('/signIn');
     });
+
 app.service("UserQuestion", function UserQuestion(){
     var UserQuestion = this;
     UserQuestion.question="Default";
@@ -145,10 +154,11 @@ app.factory("UserDetails", function () {
     }
 
     UserDetails.set = function(email, mobileNumber, lastVotedTime) {
-        UserDetails.email = email;
-        UserDetails.mobileNumber = mobileNumber;
-        UserDetails.lastVotedTime = lastVotedTime;
-        UserDetails.setLocalStorage();
+        console.log("UserDetails.set called");
+        UserDetails.setEmail(email);
+        UserDetails.setMobileNumber(mobileNumber);
+        UserDetails.setLastVotedTime(lastVotedTime);
+        console.log("After UserDetails.set call, UserDetails.email=" + UserDetails.email + ", UserDetails.mobileNumber=" + UserDetails.mobileNumber + ", lastVotedTime=" + UserDetails.lastVotedTime);
     }
 
     UserDetails.setEmail = function(email) {
@@ -162,33 +172,61 @@ app.factory("UserDetails", function () {
     }
 
     UserDetails.setLastVotedTime = function(lastVotedTime) {
+        // must be a string
         window.localStorage['lastVotedTime'] = lastVotedTime;
         UserDetails.lastVotedTime = window.localStorage['lastVotedTime'];
     }
 
     UserDetails.reset = function () {
         UserDetails.set(null, null, null);
-        UserDetails.resetLocalStorage();
     }
 
-    UserDetails.setLocalStorage = function() {
-        window.localStorage['email'] = UserDetails.email;
-        window.localStorage['mobileNumber'] = UserDetails.mobileNumber;
-        window.localStorage['lastVotedTime'] = UserDetails.lastVotedTime;
-    }
-
-    UserDetails.resetLocalStorage = function() {
-        window.localStorage['email'] = null;
-        window.localStorage['mobile'] = null;
-        window.localStorage['lastVotedTime'] = null;
-    }
 
     UserDetails.hasUser = function () {
         if (window.localStorage['email'] != "null" && window.localStorage['email'] != null && window.localStorage['email'] != undefined) {
-            UserDetails.set(window.localStorage['email'], window.localStorage['mobileNumber'], window.localStorage['lastVoteTime'], window.localStorage['password']);
+            console.log("UserDetails.hasUser called: result is true");
+            if (UserDetails.email == "null" || UserDetails.email == null || UserDetails.email == undefined) {
+                UserDetails.setEmail(window.localStorage['email']);
+                UserDetails.setMobileNumber(window.localStorage['mobileNumber']);
+                UserDetails.setLastVotedTime(window.localStorage['lastVotedTime']);
+            }
             return true;
-        } else return false;
+        } else {
+            console.log("UserDetails.hasUser called: result is false");
+            return false;
+        }
     }
 
     return UserDetails;
+});
+/*app.service("CurrentVideo", function CurrentVideo(){
+ var CurrentVideo = this;
+ CurrentVideo.id = "Default";
+
+
+ var reset = function () {
+ CurrentVideo.title="Default";
+ CurrentVideo.id = "Default";
+ }
+ });*/
+app.factory("CurrentVideo", function () {
+    var CurrentVideo  = {
+        id: 0
+    }
+
+    CurrentVideo.set = function(id) {
+        console.log("CurrentVideo.set called");
+        CurrentVideo.setId(id);
+        console.log(id);
+    }
+
+    CurrentVideo.setId = function(id) {
+        window.localStorage['id'] = id;
+        CurrentVideo.id = window.localStorage['id'];
+    }
+
+    CurrentVideo.reset = function () {
+        CurrentVideo.set(0);
+    }
+    return CurrentVideo;
 });

@@ -1,4 +1,4 @@
-<ion-view title="Edit Account">
+<ion-view view-title="Edit Account">
      <ion-content>
         <div class="list" ng-controller="EditDetailsCtrl">
             <center>
@@ -10,80 +10,130 @@
 
 				<form name="editDetailsForm" ng-submit="editDetailsCtrl.editDetails()" novalidate>
 
-
-				<label class="item item-input">
-                    <input type="email" placeholder="email" ng-model = "user.email" name="email" ng-pattern="/(.+)@(.+){2,}\.(.+){2,}/" ng-required="true">
-				</label>
+					<label class="item item-input">
+						<input type="email"
+							   placeholder="email"
+							   ng-model = "user.email"
+							   name="email"
+							   ng-pattern="/(.+)@(.+){2,}\.(.+){2,}/"
+							   ng-required="true">
+					</label>
 					<div ng-messages="editDetailsForm.email.$error" ng-if="editDetailsForm.email.$touched">
-						<p ng-message="required">email is required</p>
-						<p ng-message="pattern">not a valid email</p>
+						<p class="form-error" ng-message="required">email is required</p>
+						<p class="form-error" ng-message="pattern">not a valid email</p>
 					</div>
 
-
-                <label class="item item-input">
-                    <input type="tel" placeholder="mobile number" ng-model = "user.mobileNumber" name="mobileNumber" ng-pattern="/^\d+$/" ng-required="true">
-				</label>
+					<label class="item item-input">
+						<input type="tel"
+							   placeholder="mobile number"
+							   ng-model = "user.mobileNumber"
+							   name="mobileNumber"
+							   ng-pattern="/^\d+$/"
+							   ng-required="true">
+					</label>
 					<div ng-messages="editDetailsForm.mobileNumber.$error" ng-if="editDetailsForm.mobileNumber.$touched">
-						<p ng-message="required">mobile number is required</p>
-						<p ng-message="pattern">numbers only</p>
+						<p class="form-error" ng-message="required">mobile number is required</p>
+						<p class="form-error" ng-message="pattern">numbers only</p>
 					</div>
 
-
-				<label class = "item item-input dropDown">
-					<select ng-model="country" ng-options="country.name for country in countries" name="country" ng-required="true">
-						<option value="">country</option>
-					</select>
-				</label>
+					<label class = "item item-input dropDown">
+						<select ng-model="country"
+								ng-options="country.name for country in countries"
+								name="country"
+								ng-required="true">
+							<option value="">country</option>
+						</select>
+					</label>
 					<div ng-messages="editDetailsForm.country.$error" ng-if="editDetailsForm.country.$touched">
-						<p ng-message="required">select a country</p>
+						<p class="form-error" ng-message="required">select a country</p>
 					</div>
-				<input type="submit" ng-disabled="!editDetailsForm.$valid" class ="button button-block button-positive" value="Change Details">
+
+					<input type="submit" ng-disabled="!editDetailsForm.$valid" class ="button button-block button-positive" value="Change Details">
 
 				</form>
+				<ion-spinner ng-show="detailsLoading"></ion-spinner>
 
+				<div class="button button-block button-assertive"
+					 ng-show="detailsError">
+					{{detailsErrorMessage}}
+				</div>
 
+				<div class="button button-block button-balanced"
+					 ng-show="detailsSuccess">
+					{{detailsSuccessMessage}}
+				</div>
 
                 <br><br>
 		        <h4>Password</h4>
 
 				<form name="editPasswordForm" ng-submit="editDetailsCtrl.changePassword()" novalidate>
 
-                <label class="item item-input">
-                    <input type="password" placeholder="current password" ng-model = "currentPassword" name="currentPassword" ng-minlength="6" ng-maxlength="50" ng-pattern="/^[a-z0-9]+$/i" ng-required="true">
-				</label>
+					<label class="item item-input">
+						<input type="password"
+							   placeholder="current password"
+							   ng-model = "currentPassword"
+							   name="currentPassword"
+							   ng-minlength="6"
+							   ng-maxlength="50"
+							   ng-pattern="/^[a-z0-9]+$/i"
+							   ng-required="true" >
+					</label>
 					<div ng-messages="editPasswordForm.currentPassword.$error" ng-if="editPasswordForm.currentPassword.$touched">
-						<p ng-message="required">password is required</p>
-						<p ng-message="pattern">letters and numbers only</p>
-						<p ng-message="minlength">too short</p>
-						<p ng-message="maxlength">too long</p>
+						<p class="form-error" ng-message="required">password is required</p>
+						<p class="form-error" ng-message="pattern">letters and numbers only</p>
+						<p class="form-error" ng-message="minlength">too short</p>
+						<p class="form-error" ng-message="maxlength">too long</p>
 					</div>
 
 
-                <label class="item item-input">
-                    <input type="password" placeholder="new password" ng-model = "newPassword" name="newPassword" ng-minlength="6" ng-maxlength="50" ng-pattern="/^[a-z0-9]+$/i" ng-required="true">
-				</label>
+					<label class="item item-input">
+						<input type="password"
+							   placeholder="new password"
+							   ng-model = "newPassword"
+							   name="newPassword"
+							   ng-minlength="6"
+							   ng-maxlength="50"
+							   ng-pattern="/^[a-z0-9]+$/i"
+							   ng-required="true">
+					</label>
 					<div ng-messages="editPasswordForm.newPassword.$error" ng-if="editPasswordForm.newPassword.$touched">
-						<p ng-message="required">password is required</p>
-						<p ng-message="pattern">letters and numbers only</p>
-						<p ng-message="minlength">too short</p>
-						<p ng-message="maxlength">too long</p>
+						<p class="form-error" ng-message="required">password is required</p>
+						<p class="form-error" ng-message="pattern">letters and numbers only</p>
+						<p class="form-error" ng-message="minlength">too short</p>
+						<p class="form-error" ng-message="maxlength">too long</p>
 					</div>
 
 
-		        <label class="item item-input">
-                    <input type="password" placeholder="confirm password" ng-model = "confirmPassword" name="confirmPassword" compare-to="newPassword" ng-required="true">
-				</label>
+					<label class="item item-input">
+						<input type="password"
+							   placeholder="confirm password"
+							   ng-model = "confirmPassword"
+							   name="confirmPassword"
+							   compare-to="newPassword"
+							   ng-required="true">
+					</label>
 					<div ng-messages="editPasswordForm.confirmPassword.$error" ng-if="editPasswordForm.confirmPassword.$touched">
-						<p ng-message="required">confirmed password is required</p>
-						<p ng-message="compareTo">passwords must match</p>
+						<p class="form-error" ng-message="required">confirmed password is required</p>
+						<p class="form-error" ng-message="compareTo">passwords must match</p>
 					</div>
 
 
-				<input type="submit" ng-disabled="!editPasswordForm.$valid" class ="button button-block button-positive" value="Change Password">
+					<input type="submit" ng-disabled="!editPasswordForm.$valid" class ="button button-block button-positive" value="Change Password">
 
 				</form>
+				<ion-spinner ng-show="passwordLoading"></ion-spinner>
 
-					  <br><br>
+				<div class="button button-block button-assertive"
+					 ng-show="passwordError">
+					{{passwordErrorMessage}}
+				</div>
+
+				<div class="button button-block button-balanced"
+					 ng-show="passwordSuccess">
+					changed password!
+				</div>
+
+				<br><br>
 		  </center>
       </div>
     </ion-content>

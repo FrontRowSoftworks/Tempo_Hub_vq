@@ -1,4 +1,4 @@
-var app = angular.module('TempoHub.controllers', ['ionic'])
+var app = angular.module('TempoHub.controllers', ['ionic', 'ngMessages'])
 
 var compareTo = function() {
     return {

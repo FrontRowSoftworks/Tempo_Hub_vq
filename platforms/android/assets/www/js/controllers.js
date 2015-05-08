@@ -1,4 +1,4 @@
-var app = angular.module('TempoHub.controllers', ['ionic'])
+var app = angular.module('TempoHub.controllers', ['ionic', 'ngMessages'])
 
 var compareTo = function() {
     return {
@@ -26,56 +26,61 @@ app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', functi
   $scope.controller.forgotPassword = function() {
     $state.go('ForgotPassword');
   };
-
 }]);
 
 app.controller('SignInCtrl', ['$scope', '$http','$state', 'UserDetails', function($scope, $http, $state, UserDetails) {
     if(UserDetails.hasUser()) {
-        console.log("UD at SignInCtrl: " + UserDetails.email + ", " + UserDetails.mobileNumber);
         $state.go('mainMenu.mainPage');
     } else {
-        UserDetails.reset();
+        console.log("UserDetails.reset called from SignInCtrl because no user was found");
     }
 
     $scope.signInCtrl = {};
-
-  $scope.signInCtrl.signIn = function() {
+    $scope.signInCtrl.signIn = function() {
+      $scope.loading = true;
       var email = $scope.email;
       var pw = $scope.pw;
-      console.log(email);
 
-    $http.post('http://localhost/HubServices/SignIn.php', { 'email': email, 'pw': pw}).success(function(response) {
-      if (response == 1) {
-          $http.post('http://localhost/HubServices/GetUser.php', { 'email': email }).success(function(response) {
-              UserDetails.set(email, response.mobile, response.vote_ts);
-          });
-          $scope.email = null;
-          $scope.pw  = null;
-          $scope.signInForm.$setUntouched();
-          $state.go('mainMenu.mainPage');
-      } else {
-        alert ("email/password combination incorrect");
-          $scope.pw = null;
-      }
-    });
-  };
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/SignIn.php', { 'email': email, 'pw': pw})
+            .success(function(response) {
+                $scope.loading = false;
+                if (response == 1) {
+                  $scope.error = false;
+                    console.log(email);
+                  $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetUser.php', { 'email': email }).success(function(response) {
+                      console.log("ts from service: " + response.vote_ts);
+                      UserDetails.set(email, response.mobile, response.vote_ts);
+                      console.log("UserDetails.set called from SignInCtrl");
+                  });
+                  $scope.email = null;
+                  $scope.pw  = null;
+                  $scope.signInForm.$setUntouched();
+                  $state.go('mainMenu.mainPage');
+                } else {
+                    $scope.errorMessage = "incorrect email/password combination!";
+                    $scope.error = true;
+                      $scope.pw = null;
+                      $scope.signInForm.$setUntouched();
+                }
+            })
+            .error(function(data, status, headers, config) {
+                $scope.loading = false;
+                $scope.errorMessage = "error contacting server, try again!";
+                $scope.error = true;
+        });
+    };
 
 }]);
 
 app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $http, $state) {
-
+  $scope.success = false;
+  $scope.marketingOptIn = 1;
   $scope.signUpCtrl = {};
   $scope.signUpCtrl.signUp = function() {
-      console.log("Trying to log in now!" + " You have chosen " + $scope.marketingOptIn);
-      $scope.marketingOptIn = $scope.marketingOptIn == undefined || $scope.marketingOptIn == 0 ? 0 : 1;
+      $scope.loading = true;
+      $scope.userDevice = ionic.Platform.platform();
 
-      var userDevice = ionic.Platform.platform();
-      $scope.userDevice = userDevice;
-
-      console.log($scope.email + ' ' + $scope.password + ' ' + $scope.mobileNumber + ' ' + $scope.mobileNumber + ' ' +
-      $scope.question + ' ' + $scope.answer + ' ' + $scope.country.name + ' ' + $scope.marketingOptIn + ' ' + $scope.userDevice)
-
-      $http.post('http://localhost/HubServices/SignUp.php', {
+      $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/SignUp.php', {
           'email': $scope.email,
           'pw': $scope.password,
           'mobileNumber': $scope.mobileNumber,
@@ -86,92 +91,132 @@ app.controller('SignUpCtrl', ['$scope', '$http', '$state', function($scope, $htt
           'device': $scope.userDevice
       })
           .success(function (response) {
+              $scope.loading = false;
               if (response == 1) {
-                  console.log(response);
-                  alert("Account Creation Successful");
+                  $scope.success = true;
+                  $scope.error = false;
+                  $scope.signUpForm.$setUntouched();
                   $state.go('SignIn');
               }
               else {
-                  console.log(response);
-                  alert("Account Creation Failed");
+                  $scope.errorMessage = "email already in use!";
+                  $scope.error = true;
               }
-          }
-      );
+          })
+          .error(function(data, status, headers, config) {
+              $scope.loading = false;
+              $scope.errorMessage = "error contacting server, try again!";
+              $scope.error = true;
+          });
   }
     $scope.countries = countries;
 }]);
 
 app.controller('ForgotPasswordCtrl', ['$scope', '$state', '$http', 'UserQuestion', function($scope, $state, $http, UserQuestion){
-  console.log(UserQuestion.question);
-  console.log("Welcome to the forgot Password state!");
   $scope.forgotPasswordCtrl = {};
   $scope.forgotPasswordCtrl.getQuestion = function() {
-    if ($scope.email != undefined) {
-      $http.post('http://localhost/HubServices/GetSecurityQuestion.php', { 'email': $scope.email}).success(function(response) {
-        if(response.length > 0){
-          console.log('service response: ' + response);
-          UserQuestion.question = response;
-          UserQuestion.email = $scope.email;
-          console.log('question is: ' + UserQuestion.question);
-          $state.go('SecurityQuestion');
-          $scope.email = null;
-        }
-        else
-          alert("No account found for that email!");
+      $scope.loading = true;
+      $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetSecurityQuestion.php', { 'email': $scope.email })
+          .success(function(response) {
+              $scope.loading = false;
+              if (response.trim().length > 0) {
+                  $scope.error = false;
+                  UserQuestion.question = response;
+                  UserQuestion.email = $scope.email;
+                  $state.go('SecurityQuestion');
+                  $scope.email = null;
+                  $scope.forgotPasswordForm.$setUntouched();
+              }
+              else {
+                  $scope.error = true;
+                  $scope.errorMessage = "no account found!";
+              }
+        })
+      .error(function(data, status, headers, config) {
+          $scope.loading = false;
+          $scope.errorMessage = "error contacting server, try again!";
+          $scope.error = true;
       });
-    } else {
-      alert("Enter a valid email!")
-    }
-
-  };
+  }
 }]);
 
 app.controller('SecurityQuestionCtrl',['$state', '$scope', 'UserQuestion', '$http', function($state,$scope, UserQuestion, $http){
   $scope.securityQuestionCtrl = {};
   $scope.question = UserQuestion.question;
   $scope.securityQuestionCtrl.answerQuestion = function(){
-    if ($scope.answer != undefined) {
-      console.log("Your answer was " + $scope.answer);
-      console.log("stored email is: " + UserQuestion.email);
-
-      $http.post('http://localhost/HubServices/AnswerSecurityQuestion.php', { 'email': UserQuestion.email, 'answer': $scope.answer}).success(function(response) {
-        console.log("reset service response: " + response);
-        if (response == 1) $state.go('ResetPassword');
-        else alert ("answer is incorrect");
-        $scope.answer = null;
+      $scope.loading = true;
+      $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/AnswerSecurityQuestion.php', { 'email': UserQuestion.email, 'answer': $scope.answer})
+          .success(function(response) {
+              $scope.loading = false;
+                if (response == 1) {
+                    $scope.error = false;
+                    $state.go('ResetPassword');
+                }
+                else {
+                    $scope.error = true;
+                    $scope.errorMessage = "answer is incorrect!";
+                }
+          })
+      .error(function(data, status, headers, config) {
+          $scope.loading = false;
+          $scope.errorMessage = "error contacting server, try again!";
+          $scope.error = true;
       });
-    } else {
-      console.log("no answer entered");
-    }
-  };
-}]);
-
-app.controller('ResetPasswordCtrl',['$state', '$scope', 'UserQuestion', '$http', function($state,$scope, UserQuestion, $http){
-  $scope.resetPasswordCtrl = {};
-
-  $scope.resetPasswordCtrl.resetPassword = function() {
-    console.log("new password entered: " + $scope.newPassword);
-    $http.post('http://localhost/HubServices/ResetPassword.php', { 'email': UserQuestion.email, 'pw': $scope.newPassword}).success(function(response) {
-        console.log("reset password service response: " + response);
-
-        if (response == 1) {
-          alert("password reset");
-          $state.go('SignIn');
-
-        }
-        else alert ("error when resetting password");
-        $scope.newPassword = null;
-      });
+      $scope.answer = null;
+      $scope.securityForm.$setUntouched();
   }
 }]);
 
+app.controller('ResetPasswordCtrl',['$state', '$scope', 'UserQuestion', '$http', function($state,$scope, UserQuestion, $http){
+  $scope.success = false;
+  $scope.resetPasswordCtrl = {};
+  $scope.resetPasswordCtrl.resetPassword = function() {
+    $scope.loading = true;
+    $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/ResetPassword.php', { 'email': UserQuestion.email, 'pw': $scope.newPassword}).success(function(response) {
+        if (response == 1) {
+            $scope.loading = false;
+            $scope.success = true;
+            $scope.error = false;
+            $state.go('SignIn');
+        }
+        else {
+            $scope.error = true;
+            $scope.errorMessage = "error resetting password!";
+        }
+      })
+    .error(function(data, status, headers, config) {
+        $scope.loading = false;
+        $scope.errorMessage = "error contacting server, try again!";
+        $scope.error = true;
+    });
+    $scope.newPassword = null;
+    $scope.confirmPassword = null;
+    $scope.resetPasswordForm.$setUntouched();
+  }
+}]);
 
+app.controller('settingsMenuCtrl', ['$scope', '$state', function($scope, $state) {
+    $scope.settingsMenuCtrl = {};
+    $scope.settingsMenuCtrl.goToEditDetails = function () {
+        $state.go('mainMenu.editDetails');
+    }
+}]);
 
-app.controller('mainMenuCtrl', ['$scope', '$state', function($scope, $state){
+app.controller('mainMenuCtrl', ['$scope', '$state', 'UserDetails', function($scope, $state, UserDetails){
+  /*
+  check for user details has been omitted here because it creates an infinite loop :)
+  if the user tries to navigate anywhere past this screen without actually being logged in,
+  they'll be redirected to the sign in page anyway.
+
+  if (!UserDetails.hasUser()) {
+      $state.go('SignIn');
+      console.log("no user");
+  }*/
 
   console.log("Welcome To the main menu state!");
 
-    $scope.mainMenuCtrl ={};
+  $scope.mainMenuCtrl = {};
+
   $scope.mainMenuCtrl.voting = function() {
     $state.go('votingMenu.current');
   }
@@ -181,10 +226,16 @@ app.controller('mainMenuCtrl', ['$scope', '$state', function($scope, $state){
   }
 }]);
 
-app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($scope, UserDetails, $http){
-    console.log("UD at EDCtrl: " + UserDetails.email + ", " + UserDetails.mobileNumber);
+app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$state', '$http', function ($scope, UserDetails, $state, $http){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
 
-
+    $scope.detailsError = false;
+    $scope.passwordError = false;
+    $scope.detailsSuccess = false;
+    $scope.passwordSuccess = false;
     $scope.editDetailsCtrl = {};
     $scope.user = {
         email: UserDetails.email,
@@ -192,75 +243,141 @@ app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$http', function ($
     }
 
     $scope.editDetailsCtrl.editDetails = function(){
+        $scope.detailsLoading = true;
         console.log("email in input: " + $scope.user.email);
         $scope.oldEmail = UserDetails.email;
 
-        if ($scope.user.email != undefined && $scope.user.email != null &&  $scope.user.mobileNumber != undefined && $scope.user.mobileNumber != null && $scope.country.name != undefined && $scope.country.name != "country") {
-            $http.post('http://localhost/HubServices/EditDetails.php', {
+       $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/EditDetails.php', {
                 'oldEmail': $scope.oldEmail,
                 'email': $scope.user.email,
                 'mobileNumber': $scope.user.mobileNumber,
                 'country': $scope.country.name
             }).success(function (response) {
-                console.log("reset service response: " + response);
+                $scope.detailsLoading = false;
+                $scope.passwordError = false;
+                $scope.passwordSuccess = false;
                 if (response > 0) {
-                    alert("details changed!");
-                    if (UserDetails.email != $scope.user.email) {
-                        if (response != 2) UserDetails.setEmail($scope.user.email);
-                    }
                     UserDetails.setMobileNumber($scope.user.mobileNumber);
-                    if (response > 1) alert("email not changed, already exists");
-                } else alert("not changed");
-            });
-        } else alert ("fill in all the fields!");
+                }
+                if (response == 1) {
+                    $scope.detailsSuccessMessage = "details changed!";
+                    $scope.detailsSuccess = true;
+                    $scope.detailsError = false;
+                    if (UserDetails.email != $scope.user.email) {
+                        UserDetails.setEmail($scope.user.email);
+                    }
+                } else if (response == 2) {
+                    $scope.user.email = UserDetails.email;
+                    $scope.detailsErrorMessage = "email not changed, already in use!";
+                    $scope.detailsError = true;
+                    $scope.detailsSuccessMessage = "details (except email) changed!";
+                    $scope.detailsSuccess = true;
+                } else {
+                    $scope.detailsErrorMessage = "error changing details!";
+                    $scope.detailsError = true;
+                }
+            })
+           .error(function(data, status, headers, config) {
+               $scope.detailsLoading = false;
+               $scope.detailsSuccess = false;
+               $scope.detailsErrorMessage = "error contacting server, try again!";
+               $scope.detailsError = true;
+           });
     }
 
     $scope.editDetailsCtrl.changePassword = function(){
+        $scope.passwordLoading = true;
         $scope.currentEmail = UserDetails.email;
         console.log($scope.currentEmail);
-        if (($scope.newPassword == $scope.confirmPassword) && $scope.currentPassword != null && $scope.currentPassword != undefined && $scope.newPassword != null && $scope.newPassword != undefined && $scope.confirmPassword != null && $scope.confirmPassword != undefined) {
-            console.log("changePassword Called with new password = " + $scope.newPassword);
-            $http.post('http://localhost/HubServices/ChangePassword.php', {
-                'email': $scope.currentEmail,
-                'currentPassword': $scope.currentPassword,
-                'newPassword': $scope.newPassword
-            }).success(function (response) {
-                if (response == 1) {
-                    console.log(response);
-                    alert("Password Update Successful");
-                    //$state.go('mainMenu');
-                }
-                else {
-                    console.log(response);
-                    alert("Password Update Failed");
-                }
-            });
-            $scope.currentPassword = null;
-            $scope.newPassword = null;
-            $scope.confirmPassword = null;
-        } else alert ("fill in all the fields");
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/ChangePassword.php', {
+            'email': $scope.currentEmail,
+            'currentPassword': $scope.currentPassword,
+            'newPassword': $scope.newPassword
+        }).success(function (response) {
+            $scope.passwordLoading = false;
+            $scope.detailsError = false;
+            $scope.detailsSuccess = false;
+            if (response == 1) {
+                $scope.passwordSuccess = true;
+                $scope.passwordError = false;
+            }
+            else {
+                $scope.passwordErrorMessage = "current password is incorrect!";
+                $scope.passwordError = true;
+                $scope.passwordSuccess = false;
+            }
+        })
+        .error(function(data, status, headers, config) {
+            $scope.passwordLoading = false;
+            $scope.passwordSuccess = false;
+            $scope.passwordErrorMessage = "error contacting server, try again!";
+            $scope.passwordError = true;
+        });
+        $scope.currentPassword = null;
+        $scope.newPassword = null;
+        $scope.confirmPassword = null;
+        $scope.editPasswordForm.$setUntouched();
     }
+
+    $scope.$on('$locationChangeStart', function( event ) {
+        $scope.detailsError = false;
+        $scope.passwordError = false;
+        $scope.detailsSuccess = false;
+        $scope.passwordSuccess = false;
+        $scope.user = {
+            email: UserDetails.email,
+            mobileNumber: UserDetails.mobileNumber
+        }
+    });
+
 
     $scope.countries = countries;
 }]);
 
-app.controller('ContactCtrl', ['$scope', '$http', 'UserDetails', function ($scope, $http, UserDetails) {
+app.controller('ContactCtrl', ['$scope', '$http', 'UserDetails', '$state', function ($scope, $http, UserDetails, $state) {
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
+
+    $scope.success = false;
+    $scope.error = false;
     $scope.contactCtrl = {};
     $scope.contactCtrl.contact = function () {
-        if ($scope.subject != "subject" && $scope.content != null && $scope.content!= undefined) {
-            console.log("contacting tempo...");
-            $http.post('http://localhost/HubServices/Contact.php', {
+        $scope.loading = true;
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/Contact.php', {
                 'email': UserDetails.email,
                 'subject': $scope.subject.name,
                 'content': $scope.content
             }).success(function (response) {
-                console.log(response);
+                 $scope.loading = false;
                 if (response == 1) {
-                    alert ("contacted!");
-                } else alert ("error contacting tempo");
+                    $scope.success = true;
+                    $scope.error = false;
+                } else {
+                    $scope.errorMessage = "error contacting TEMPO!";
+                    $scope.error = true;
+                    $scope.success = false;
+                }
+            })
+            .error(function(data, status, headers, config) {
+                $scope.loading = false;
+                $scope.errorMessage = "error contacting server, try again!";
+                $scope.error = true;
+                $scope.success = false;
             });
-        } else alert ("fill in all the fields!")
+        $scope.content = null;
+        $scope.contactForm.$setUntouched();
     }
+
+    $scope.$on('$locationChangeStart', function( event ) {
+        $scope.success = false;
+        $scope.error = false;
+        $scope.content = null;
+        $scope.contactForm.$setUntouched();
+    });
+
+
     $scope.subjects = subjects;
 }]);
 
@@ -269,32 +386,259 @@ app.controller('SignOutCtrl', ['$scope', 'UserDetails', function ($scope, UserDe
     $scope.signOutCtrl.signOut = function () {
         UserDetails.reset();
     }
-
 }]);
 
-app.controller('currentCtrl', [ '$scope', '$http', function($scope,$http){
+app.controller('votingMenuCtrl', ['$scope', '$state', 'UserDetails', function($scope, $state, UserDetails){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
+
+    $scope.votingMenuCtrl = {};
+
+    $scope.votingMenuCtrl.goToHome = function () {
+        $state.go('mainMenu.mainPage');
+    }
+
+    $scope.votingMenuCtrl.goToCurrent = function () {
+        $state.go('votingMenu.current');
+    }
+
+    $scope.votingMenuCtrl.goToPrevious = function () {
+        $state.go('votingMenu.previous');
+    }
+}]);
+
+app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'CurrentVideo', function($scope, $http, UserDetails, $state, CurrentVideo){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
+
+    $scope.loading = true;
+    $scope.videosAvailable = true;
+    $scope.votingLoading = false;
+    $scope.success = false;
+    $scope.error = false;
+
     $scope.currentCtrl = {};
     $scope.currentVideos = [];
-        $http.post('http://localhost/HubServices/GetCCCDetails.php')
-       .success(function (response) {
-         console.log("GetCCCDetails service response: " + response[0]['title']);
-         for(i = 0; i < response.length; i++)
-         $scope.currentVideos[i]={title: response[i]['title'], artist:response[i]['artist'], id: response[i]['brightcove_id']}; //
 
-       });
+    $scope.currentCtrl.hasVoted = function() {
+        var midnight = new Date();
+        midnight.setHours(0,0,0,0);
+        var lastVoted;
+        if (UserDetails.lastVotedTime != null) {
+            lastVoted = new Date(Date.parse(UserDetails.lastVotedTime));
+        } else {
+            lastVoted = 0;
+        }
+        return lastVoted != 0 ? lastVoted > midnight : false;
+    }
 
+    $scope.currentCtrl.vote = function() {
+        $scope.votingLoading = true;
+        console.log("voted for: " + $scope.currentCtrl.votedVideo.sorting);
+        var timestamp = new Date().toString();
+        UserDetails.setLastVotedTime(timestamp);
+        console.log("vote timestamp: " + UserDetails.lastVotedTime);
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/CastCCCVote.php', {
+            'email': UserDetails.email,
+            'timestamp': timestamp,
+            'sort': $scope.currentCtrl.votedVideo.sorting
+        }).success(function (response) {
+            $scope.votingLoading = false;
+                console.log("CastCCCVote response: " + response);
+                if (response > 0) {
+                    $scope.success = true;
+                    $scope.error = false;
+                    $scope.voted = $scope.currentCtrl.hasVoted();
+                } else {
+                    $scope.errorMessage = "error contacting server, try again!"
+                    $scope.error = true;
+                    $scope.success = false;
+                }
+            })
+            .error(function(data, status, headers, config) {
+                $scope.votingLoading = false;
+                $scope.errorMessage = "error contacting server, try again!"
+                $scope.error = true;
+            });
+    }
 
+    $scope.totalVotes;
+    $scope.currentCtrl.getTotalVotes = function () {
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetCCCVotesCurrent.php')
+            .success(function (response) {
+                console.log("total votes: " + response);
+                if (!isNaN(response) && response > 0) {
+                    $scope.totalVotes = response;
+                } else $scope.videosAvailable = false;
+            })
+            .error(function(data, status, headers, config) {
+                $scope.videosAvailable = false;
+                $scope.loading = false;
+            });
+    }
 
+    $scope.currentCtrl.getVideos = function (refresh) {
+        $scope.currentCtrl.getTotalVotes();
+        console.log("getting current videos");
+        $scope.voted = $scope.currentCtrl.hasVoted();
+        console.log("voted? " + $scope.voted);
+
+        if ($scope.videosAvailable) {
+            $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetCCCVotingCurrent.php')
+                .success(function (response) {
+                    $scope.loading = false;
+                    for (var i = 0; i < response.length; i++) {
+                        $scope.currentVideos[i] = {
+                            sorting: response[i]['sorting'],
+                            title: response[i]['title'],
+                            artist: response[i]['artist'],
+                            country: response[i]['country'],
+                            id: response[i]['brightcove_id'],
+                            video_still: response[i]['video_still_url'],
+                            thumbnail: (response[i]['thumbnail_url'] != null) ?
+                                response[i]['thumbnail_url'] :
+                                "img/default-thumbnail.png",
+                            votes: response[i]['votes'],
+                            votePercentage: ((response[i]['votes'] / $scope.totalVotes) * 100).toFixed(1)
+                        }
+                    }
+                })
+                .error(function (data, status, headers, config) {
+                    $scope.loading = false;
+                    $scope.videosAvailable = false;
+                })
+                .finally(function () {
+                    if (refresh) {
+                        // Stop the ion-refresher from spinning
+                        $scope.$broadcast('scroll.refreshComplete');
+                    }
+                });
+        }
+
+    }
+
+    $scope.currentCtrl.getVideos(false);
+    //$filter('orderBy')($scope.currentVideos, -votes);
+
+    $scope.currentCtrl.goToVideo = function(video) {
+        CurrentVideo.set(video.id);
+        console.log(CurrentVideo.id);
+        $state.go('votingMenu.single', {videoId: video.id});
+
+    }
+
+    $scope.doRefresh = function() {
+            $scope.currentCtrl.getVideos(true);
+            $scope.videosAvailable = true;
+            $scope.votingLoading = false;
+            $scope.success = false;
+            $scope.error = false;
+    };
+
+    $scope.$on('$locationChangeStart', function( event ) {
+        $scope.success = false;
+        $scope.error = false;
+
+    });
 }]);
 
-app.controller('videoCtrl', function($scope, $stateParams) {
-});
+app.controller('viewVideoCtrl', ['$scope', 'CurrentVideo', function($scope, CurrentVideo){
+    console.log(CurrentVideo.id);
+    $scope.videoId = CurrentVideo.id;
+}]);
+app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', function($scope, UserDetails, $state, $http){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
 
-app.controller('previousCtrl', function($scope){
-  console.log('previousCtrl');
-});
+    console.log("in previous ctrl");
 
-app.controller('clipsCtrl', ['$scope', '$state', function($scope, $state){
+    $scope.loading = true;
+    $scope.videosAvailable = true;
+
+    $scope.previousCtrl = {};
+    $scope.previousVideos = [];
+
+    $scope.winningVideoSort;
+    $scope.spotlight = true;
+    $scope.pollName;
+    $scope.previousVotes;
+    $scope.previousCtrl.getDetails = function () {
+        $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetCCCWinnerPrevious.php')
+            .success(function (response) {
+                console.log("previous details response: " + response);
+                var details = response.split(",");
+                $scope.winningVideoSort = details[0];
+                if ($scope.winningVideoSort < 1) {
+                    $scope.spotlight = false;
+                }
+                console.log("winning vid sort: " + $scope.winningVideoSort);
+                $scope.pollName = details[1] + details[2];
+                console.log("poll name: " + $scope.pollName);
+                if (!isNaN(details[3]) && details[3] > 0) {
+                    $scope.previousVotes = details[3];
+                    console.log("previous total votes: " + $scope.previousVotes);
+                } else $scope.videosAvailable = false;
+            })
+            .error(function(data, status, headers, config) {
+                $scope.videosAvailable = false;
+                $scope.loading = false;
+            });
+        setTimeout($scope.previousCtrl.getVideos, 500);
+    }
+
+    $scope.previousCtrl.getVideos = function () {
+        if ($scope.videosAvailable) {
+            $http.post('http://ec2-52-11-126-6.us-west-2.compute.amazonaws.com/HubServices/GetCCCVotingPrevious.php')
+                .success(function (response) {
+                    $scope.loading = false;
+                    for (var i = 0; i < response.length; i++) {
+                        $scope.previousVideos[i] = {
+                            sorting: response[i]['sorting'],
+                            title: response[i]['title'],
+                            artist: response[i]['artist'],
+                            country: response[i]['country'],
+                            id: response[i]['brightcove_id'],
+                            video_still: response[i]['video_still_url'],
+                            thumbnail: (response[i]['thumbnail_url'] != null) ?
+                                response[i]['thumbnail_url'] :
+                                "img/default-thumbnail.png",
+                            votes: response[i]['votes'],
+                            votePercentage: ((response[i]['votes'] / $scope.previousVotes) * 100).toFixed(1)
+                        }
+                        if (($scope.previousVideos[i].sorting == $scope.winningVideoSort)
+                            && ($scope.previousVideos[i].video_still == null)) {
+                            $scope.spotlight = false;
+                        }
+
+                    }
+                })
+                .error(function (data, status, headers, config) {
+                    $scope.loading = false;
+                    $scope.videosAvailable = false;
+                });
+            if ($scope.previousVideos[0] != null) {
+                if (isNaN($scope.previousVideos[0].votePercentage)) {
+                    $scope.previousCtrl.getVideos();
+                }
+            }
+
+        }
+
+    }
+    $scope.previousCtrl.getDetails();
+}]);
+
+app.controller('clipsCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
 }]);
 
 var subjects = [ {name: "CCC Write-In Vote"}, {name: "Question"}, {name: "Comment"}];

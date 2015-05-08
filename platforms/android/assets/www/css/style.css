@@ -9,24 +9,120 @@ input.textBox::-moz-placeholder { text-align: left; } /* firefox 19+ */
 input.textBox:-ms-input-placeholder { text-align: left; } /* ie */
 input.textBox:-moz-placeholder { text-align: left; }
 
-.dropDown * { width:100%;}
-
-.formError {
-    background-color: red;
+.dropDown * {
     width: 100%;
+    margin-right: 14px;
+}
+
+select {
+    padding:3px;
+    margin: 0;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    -webkit-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    -moz-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    background: #f8f8f8;
+    color:#000;
+    border:none;
+    outline:none;
+    display: inline-block;
+    cursor:pointer;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    select {padding-right:18px}
 }
 
 .form-error {
     display: block;
     padding: 8px;
     border: 1px solid #ef473a;
+    vertical-align: middle;
     margin-top: 8px;
+    margin-bottom: 8px;
     color: #ef473a;
 }
 
-.form-success {
-    color: #28a54c;
+.ccc-container {
+    display: table;
+    margin: 12px;
+    padding: 12px;
+    border: 1px solid #ddd;
 }
+
+.ccc-thumbnail-container {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.ccc-thumbnail {
+    width: 96px;
+    height: 54px;
+}
+
+.ccc-details-container {
+    display: table-cell;
+    padding-left: 12px;
+    vertical-align: middle;
+    width: 100%;
+}
+
+.ccc-details-title {
+    font-size: larger;
+}
+
+.ccc-details-text{
+    display: block;
+}
+
+.ccc-votes-container {
+    display: table-cell;
+    padding-left: 12px;
+    vertical-align: middle;
+}
+
+.ccc-votes {
+    color: #387ef5;
+    font-size: large;
+    font-weight: bold;
+}
+
+.ccc-spotlight-container {
+    display: block;
+    margin: 12px;
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+.ccc-spotlight-image {
+    width: 276px;
+    height:155px;
+    margin-bottom: 8px;
+}
+
+.ccc-spotlight-details-title {
+    display: block;
+    font-size: x-large;
+    margin: 8px 0px 8px 0px;
+}
+
+.ccc-spotlight-details-text{
+    display: block;
+    font-size: larger;
+}
+
+.ccc-spotlight-votes {
+    color: #387ef5;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+
+
+
 
 
 
