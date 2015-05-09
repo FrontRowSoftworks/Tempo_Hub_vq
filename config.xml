@@ -13,15 +13,14 @@
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="BackupWebStorage" value="none"/>
-
+  <preference name="orientation" value="portrait"/>
   <preference name="AutoHideSplashScreen" value="false"/>
-
-    <preference name="SplashScreen" value="screen"/>
-    <preference name="SplashScreenDelay" value="2000"/>
-    <preference name="ShowSplashScreenSpinner" value="false" />
-    <preference name="FadeSplashScreen" value="true" />
-    <preference name="FadeSplashScreenDuration" value="1.0" />
-    <feature name="StatusBar">
+  <preference name="SplashScreen" value="screen"/>
+  <preference name="SplashScreenDelay" value="2000"/>
+  <preference name="ShowSplashScreenSpinner" value="false" />
+  <preference name="FadeSplashScreen" value="true" />
+  <preference name="FadeSplashScreenDuration" value="1.0" />
+  <feature name="StatusBar">
     <param name="ios-package" value="CDVStatusBar" onload="true"/>
   </feature>
   <platform name="android">

@@ -660,7 +660,6 @@ app.controller('clipsCtrl', ['$scope', 'UserDetails', '$state', '$sce', function
 
     $scope.$on('$stateChangeStart', function( event ) {
         $scope.clips = "";
-        console.log("destroyed");
     });
 }]);
 
