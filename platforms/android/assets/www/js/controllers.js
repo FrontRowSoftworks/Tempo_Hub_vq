@@ -550,6 +550,7 @@ app.controller('viewVideoCtrl', ['$scope', 'CurrentVideo', function($scope, Curr
     console.log(CurrentVideo.id);
     $scope.videoId = CurrentVideo.id;
 }]);
+
 app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', function($scope, UserDetails, $state, $http){
     if (!UserDetails.hasUser()) {
         $state.go('SignIn');
@@ -634,11 +635,33 @@ app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', func
     $scope.previousCtrl.getDetails();
 }]);
 
-app.controller('clipsCtrl', ['$scope', 'UserDetails', '$state', function($scope, UserDetails, $state){
+app.controller('clipsMenuCtrl', ['$scope', '$state', 'UserDetails', function($scope, $state, UserDetails){
     if (!UserDetails.hasUser()) {
         $state.go('SignIn');
         console.log("no user");
     }
+
+    $scope.clipsMenuCtrl = {};
+
+    $scope.clipsMenuCtrl.goToHome = function () {
+        $state.go('mainMenu.mainPage');
+    }
+}]);
+
+app.controller('clipsCtrl', ['$scope', 'UserDetails', '$state', '$sce', function($scope, UserDetails, $state, $sce){
+    if (!UserDetails.hasUser()) {
+        $state.go('SignIn');
+        console.log("no user");
+    }
+
+    $scope.clipsCtrl = {};
+
+    $scope.clips = $sce.trustAsHtml("<object id=\"myExperience\" class=\"BrightcoveExperience\"><param name=\"bgcolor\" value=\"#FFFFFF\" /><param name=\"width\" value=\"588\" /><param name=\"height\" value=\"410\" /><param name=\"playerID\" value=\"4222935697001\" /><param name=\"playerKey\" value=\"AQ~~,AAAAAAr-RdE~,IgS0kIfymb22Tx2t2RVVtCB-87unfI1Z\" /><param name=\"isVid\" value=\"true\" /><param name=\"isUI\" value=\"true\" /><param name=\"dynamicStreaming\" value=\"true\" /></object>");
+
+    $scope.$on('$stateChangeStart', function( event ) {
+        $scope.clips = "";
+        console.log("destroyed");
+    });
 }]);
 
 var subjects = [ {name: "CCC Write-In Vote"}, {name: "Question"}, {name: "Comment"}];

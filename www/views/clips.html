@@ -1,11 +1,15 @@
 <ion-view view-title="Clips">
-	<ion-content>
-		<ion-list>
-			<center>
-				<br>
-				<br>
-				<b>Clips go here</b>
-			</center>
-		</ion-list>
-	</ion-content>
+	<br><br>
+	<!-- Start of Brightcove Player -->
+
+	<!--
+	By use of this code snippet, I agree to the Brightcove Publisher T and C
+	found at https://accounts.brightcove.com/en/terms-and-conditions/.
+	-->
+
+	<!--<script language="JavaScript" type="text/javascript" src="http://admin.brightcove.com/js/BrightcoveExperiences.js"></script>-->
+
+	<div ng-bind-html="clips"></div>
+
+	<!-- End of Brightcove Player -->
 </ion-view>

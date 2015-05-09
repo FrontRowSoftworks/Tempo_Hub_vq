@@ -125,12 +125,21 @@ app.config(function($stateProvider, $urlRouterProvider) {
                 templateUrl: 'views/clipsMenu.html'
             })
             .state('clipsMenu.clips', {
+                cache: false,
                 url: '/clips',
                 views: {
                     'clipsMenuContent': {
                         templateUrl: 'views/clips.html',
                         controller: 'clipsCtrl'
                     }
+                },
+                onEnter: function(){
+                    console.log("entering clips");
+                    setTimeout("brightcove.createExperiences()", 1);
+
+                },
+                onExit: function(){
+                    console.log("leaving clips");
                 }
             });
     $urlRouterProvider.otherwise('/signIn');

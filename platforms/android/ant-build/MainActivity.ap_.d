@@ -57,7 +57,6 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/templates/tab-dash.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/templates/tab-account.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/img/tempo_logo.jpg \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/img/ionic.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/img/default-thumbnail.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/lib/ng-cordova \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/lib/ionic \
