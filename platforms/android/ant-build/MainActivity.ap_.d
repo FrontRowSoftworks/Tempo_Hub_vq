@@ -597,7 +597,6 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/views/securityQuestion.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/views/previous.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/views/current.html \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/views/splashScreen.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/views/clipsMenu.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/views/votingMenu.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/views/resetPassword.html \
@@ -614,6 +613,7 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/angular-messages.min.js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/brighcoveStuff.js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/controllers.js \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/configs.js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/css/style.css \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/plugins/org.apache.cordova.splashscreen \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/plugins/cordova-plugin-inappbrowser \

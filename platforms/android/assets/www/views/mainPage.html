@@ -3,7 +3,7 @@
         <div class="list" ng-controller="mainMenuCtrl">
             <center>
                 <br>
-                <img src="img/tempo_logo.jpg">
+                <img src="{{tempoConfigs.logo}}">
                 <br><br>
 
                 <button class ="button button-block button-positive" ng-click="mainMenuCtrl.voting()">
@@ -19,7 +19,7 @@
 	<ion-footer-bar ng-controller="BannerCtrl" class="hide-on-keyboard-open">
 		<div class="bannerContainer">
 			<a href="#" ng-click="bannerCtrl.go()">
-				<img src="img/ad-banner.png" class="banner">
+				<img src="{{tempoConfigs.banner}}" class="banner">
 			</a>
 		</div>
 		</center>

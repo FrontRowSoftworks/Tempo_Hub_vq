@@ -1,7 +1,5 @@
 var app = angular.module('TempoHub.controllers', ['ionic', 'ngMessages'])
 
-var bannerLink = 'http://gottempo.com';
-
 var compareTo = function() {
     return {
         require: "ngModel",
@@ -25,7 +23,7 @@ app.directive("compareTo", compareTo);
 app.controller('BannerCtrl', ['$scope', function($scope) {
     $scope.bannerCtrl = {};
     $scope.bannerCtrl.go = function () {
-        window.open(bannerLink, '_system', 'location=yes');
+        window.open($scope.tempoConfigs.bannerLink, '_system', 'location=yes');
         return false;
     };
 }]);
@@ -341,6 +339,11 @@ app.controller('EditDetailsCtrl', ['$scope', 'UserDetails', '$state', '$http', f
 
 
     $scope.countries = countries;
+}]);
+
+app.controller('AboutCtrl', ['$scope', '$sce', function ($scope, $sce) {
+    $scope.aboutCtrl = {};
+    $scope.content =  $sce.trustAsHtml($scope.tempoConfigs.about);
 }]);
 
 app.controller('ContactCtrl', ['$scope', '$http', 'UserDetails', '$state', function ($scope, $http, UserDetails, $state) {

@@ -15,8 +15,17 @@ var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers', 'ngMessag
   });
 });*/
 
-app.config(function($stateProvider, $urlRouterProvider) {
+app.run(function($rootScope) {
+    $rootScope.tempoConfigs = {
+        logo: tConfigs.configLogo,
+        banner: tConfigs.configBanner,
+        bannerLink: tConfigs.configBannerLink,
+        about: tConfigs.configAbout
+    };
 
+});
+
+app.config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('SignIn', {
                 url: '/signIn',
