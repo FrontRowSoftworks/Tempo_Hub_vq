@@ -1,6 +1,6 @@
 var app = angular.module('TempoHub.controllers', ['ionic', 'ngMessages'])
 
-var bannerLink = 'http://google.com';
+var bannerLink = 'http://gottempo.com';
 
 var compareTo = function() {
     return {
