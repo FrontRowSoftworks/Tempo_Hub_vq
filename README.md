@@ -1,6 +1,11 @@
 # Tempo_Hub_vq
 Read this before your pull the latest update!!!
 
+To make the banner bar a link, you may need to add (in the CLI in the root of the project)
+
+$ cordova plugin add https://git-wip-us.apache.org/repos/asf/cordova-plugin-inappbrowser.git
+
+---------------------------------------------------------
 To perform form validation effectively, a few (ha!) things needed to be changed around. From your perspective, you just need to make a few small changes in order to run the app locally.
 
 $ npm install angular-messages
