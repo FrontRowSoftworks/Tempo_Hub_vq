@@ -29,8 +29,8 @@
     <description>
         An Ionic Framework and Cordova project.
     </description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
+    <author email="frontrowsoftworks@gmail.com" href="http://ionicframework.com/">
+      Front Row Softworks
     </author>
     <content src="index.html" />
     <access origin="*" />

@@ -1,20 +1,6 @@
 
 var app = angular.module('TempoHub', ['ionic', 'TempoHub.controllers', 'ngMessages', 'ngCordova'])
 
-/*app.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-    }
-    if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
-    }
-  });
-});*/
-
 app.run(function($rootScope) {
     $rootScope.tempoConfigs = {
         logo: tConfigs.configLogo,
@@ -110,12 +96,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 },
                 onEnter: function(){
-                    console.log("Hi there");
                     setTimeout("brightcove.createExperiences()", 1);
 
                 },
                 onExit: function(){
-                    console.log("goodBye!!!");
                 }
             })
             .state('votingMenu.previous', {
@@ -143,12 +127,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
                     }
                 },
                 onEnter: function(){
-                    console.log("entering clips");
                     setTimeout("brightcove.createExperiences()", 1);
 
                 },
                 onExit: function(){
-                    console.log("leaving clips");
                 }
             });
     $urlRouterProvider.otherwise('/signIn');
@@ -217,16 +199,7 @@ app.factory("UserDetails", function () {
 
     return UserDetails;
 });
-/*app.service("CurrentVideo", function CurrentVideo(){
- var CurrentVideo = this;
- CurrentVideo.id = "Default";
 
-
- var reset = function () {
- CurrentVideo.title="Default";
- CurrentVideo.id = "Default";
- }
- });*/
 app.factory("CurrentVideo", function () {
     var CurrentVideo  = {
         id: 0

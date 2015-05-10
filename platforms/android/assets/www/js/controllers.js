@@ -427,7 +427,6 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
         console.log("no user");
     }
 
-    $scope.bannerLink = bannerLink;
     $scope.loading = true;
     $scope.videosAvailable = true;
     $scope.votingLoading = false;
@@ -517,6 +516,11 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
                                 "img/default-thumbnail.png",
                             votes: response[i]['votes'],
                             votePercentage: ((response[i]['votes'] / $scope.totalVotes) * 100).toFixed(1)
+                        }
+                    }
+                    if ($scope.currentVideos[0] != null) {
+                        if (isNaN($scope.currentVideos[0].votePercentage)) {
+                            $scope.currentCtrl.getVideos(refresh);
                         }
                     }
                 })

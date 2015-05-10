@@ -65,7 +65,6 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-port-xhdpi/screen.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/_where-is-www.txt \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/templates \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/cordova.js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/index.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/cordova_plugins.js \
@@ -75,13 +74,6 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/css \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/plugins \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/templates/chat-detail.html \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/templates/tab-chats.html \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/templates/tabs.html \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/templates/tab-dash.html \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/templates/tab-account.html \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/img/tempo_logo.jpg \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/img/ad-banner.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/img/default-thumbnail.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/lib/ng-cordova \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/lib/ionic \
@@ -609,9 +601,7 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/views/editDetails.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/views/videoPage.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/app.js \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/services.js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/angular-messages.min.js \
-/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/brighcoveStuff.js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/controllers.js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/configs.js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/css/style.css \

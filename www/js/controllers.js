@@ -518,6 +518,11 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
                             votePercentage: ((response[i]['votes'] / $scope.totalVotes) * 100).toFixed(1)
                         }
                     }
+                    if ($scope.currentVideos[0] != null) {
+                        if (isNaN($scope.currentVideos[0].votePercentage)) {
+                            $scope.currentCtrl.getVideos(refresh);
+                        }
+                    }
                 })
                 .error(function (data, status, headers, config) {
                     $scope.loading = false;
