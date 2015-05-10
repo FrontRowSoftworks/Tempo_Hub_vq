@@ -427,7 +427,6 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
         console.log("no user");
     }
 
-    $scope.bannerLink = bannerLink;
     $scope.loading = true;
     $scope.videosAvailable = true;
     $scope.votingLoading = false;
