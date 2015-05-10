@@ -127,6 +127,26 @@ select {
     height: 100%;
 }
 
+body.keyboard-open .has-footer{
+    bottom: 0;
+}
+
+.bannerContainer {
+    width: 240px;
+    height: 44px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -120px;
+    margin-top: -22px;
+}
+
+img.banner {
+   /* background: url('/img/ad-banner.png') no-repeat center;
+    width: 100%;
+    height: 100%; */
+
+}
 
 
 

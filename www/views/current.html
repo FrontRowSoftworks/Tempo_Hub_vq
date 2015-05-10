@@ -1,5 +1,5 @@
 <ion-view view-title="Current Week">
-    <ion-content >
+    <ion-content>
 		<div ng-controller="CurrentCtrl">
         <ion-refresher
                 pulling-text="Pull to refresh..."
@@ -23,36 +23,12 @@
 				</div>
 				<div class="ccc-votes-container">
 					<span class="ccc-votes" ng-show="voted">{{video.votePercentage}}%</span>
-					<!--<ion-radio ng-model="choice" ng-value="{{video.id}}" ng-show="!voted"></ion-radio>-->
-				</div>
-				<!--<div class="ccc-vote-now">
-
-				</div>-->
-
-
-
-
-                <!--<div class="col">
-                    <b>Title:</b> {{video.title}}
-                    <b>Artist:</b>{{video.artist}}<br>
-                    <img src = "{{video.image_url}}" style ="width:75px;height:75px">
-                </div>
-                -->
-				<!--
-                <div class="col">
-                    <!--<a class="button icon-right ion-chevron-right button-calm" href="#/votingMenu/current/{{video.id}}"><!--#/votingMenu/current/{{video.id}}
-                        Watch Now</a>-->
-				<!--
-                    <button class ="button button-positive" ng-click="currentCtrl.goToVideo(video)">
-                        Watch Now
-                    </button>
-                </div>
-				-->
+					</div>
             </div>
             </div>
 
 			<center>
-			<form name="votingForm" ng-submit="currentCtrl.vote()" ng-show="!voted" novalidate>
+			<form name="votingForm" ng-submit="currentCtrl.vote()" ng-show="!voted && !loading" novalidate>
 
 				<label class = "item item-input dropDown">
 					<select  ng-model="currentCtrl.votedVideo"
@@ -83,11 +59,20 @@
 				</div>
 			</center>
         </ion-list>
+		<br><br>
 		<center>
 			<h4 ng-show="!videosAvailable">Error retrieving videos, please try again!</h4>
 		</center>
 		</div>
     </ion-content>
+	<ion-footer-bar ng-controller="BannerCtrl" class="hide-on-keyboard-open">
+			<div class="bannerContainer">
+				<a href="#" ng-click="bannerCtrl.go()">
+					<img src="img/ad-banner.png" class="banner">
+				</a>
+			</div>
+		</center>
+	</ion-footer-bar>
 </ion-view>
 
 

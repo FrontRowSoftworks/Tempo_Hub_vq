@@ -1,5 +1,8 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/MainActivity.ap_ \
- : /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-xhdpi/icon.png \
+ : /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-xhdpi/ic_action_previous_item.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-xhdpi/ic_action_remove.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-xhdpi/ic_action_next_item.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-xhdpi/icon.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/xml/config.xml \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-port-ldpi/screen.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-land-xxxhdpi/screen.png \
@@ -13,13 +16,25 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/values/strings.xml \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-land-xhdpi/screen.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-land-xxhdpi/screen.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-hdpi/ic_action_previous_item.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-hdpi/ic_action_remove.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-hdpi/ic_action_next_item.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-hdpi/icon.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-port-xxhdpi/screen.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-land-mdpi/screen.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-mdpi/ic_action_previous_item.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-mdpi/ic_action_remove.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-mdpi/ic_action_next_item.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-mdpi/icon.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-land-ldpi/screen.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-xxhdpi/ic_action_previous_item.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-xxhdpi/ic_action_remove.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-xxhdpi/ic_action_next_item.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-xxhdpi/icon.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/res/drawable-port-xhdpi/screen.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-xhdpi/ic_action_previous_item.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-xhdpi/ic_action_remove.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-xhdpi/ic_action_next_item.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-xhdpi/icon.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-port-ldpi/screen.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-land-xxxhdpi/screen.png \
@@ -32,11 +47,20 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-ldpi/icon.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-land-xhdpi/screen.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-land-xxhdpi/screen.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-hdpi/ic_action_previous_item.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-hdpi/ic_action_remove.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-hdpi/ic_action_next_item.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-hdpi/icon.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-port-xxhdpi/screen.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-land-mdpi/screen.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-mdpi/ic_action_previous_item.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-mdpi/ic_action_remove.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-mdpi/ic_action_next_item.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-mdpi/icon.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-land-ldpi/screen.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-xxhdpi/ic_action_previous_item.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-xxhdpi/ic_action_remove.png \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-xxhdpi/ic_action_next_item.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-xxhdpi/icon.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/res/drawable-port-xhdpi/screen.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/_where-is-www.txt \
@@ -57,6 +81,7 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/templates/tab-dash.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/templates/tab-account.html \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/img/tempo_logo.jpg \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/img/ad-banner.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/img/default-thumbnail.png \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/lib/ng-cordova \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/lib/ionic \
@@ -591,6 +616,9 @@
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/js/controllers.js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/css/style.css \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/plugins/org.apache.cordova.splashscreen \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/plugins/cordova-plugin-inappbrowser \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/plugins/org.apache.cordova.splashscreen/www \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/plugins/org.apache.cordova.splashscreen/www/splashscreen.js \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/plugins/cordova-plugin-inappbrowser/www \
+/home/elli/tempo/Tempo_Hub_vq/platforms/android/assets/www/plugins/cordova-plugin-inappbrowser/www/inappbrowser.js \
 /home/elli/tempo/Tempo_Hub_vq/platforms/android/ant-build/AndroidManifest.xml \

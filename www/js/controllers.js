@@ -1,5 +1,7 @@
 var app = angular.module('TempoHub.controllers', ['ionic', 'ngMessages'])
 
+var bannerLink = 'http://google.com';
+
 var compareTo = function() {
     return {
         require: "ngModel",
@@ -7,7 +9,6 @@ var compareTo = function() {
             otherModelValue: "=compareTo"
         },
         link: function(scope, element, attributes, ngModel) {
-
             ngModel.$validators.compareTo = function(modelValue) {
                 return modelValue == scope.otherModelValue;
             };
@@ -20,6 +21,14 @@ var compareTo = function() {
 };
 
 app.directive("compareTo", compareTo);
+
+app.controller('BannerCtrl', ['$scope', function($scope) {
+    $scope.bannerCtrl = {};
+    $scope.bannerCtrl.go = function () {
+        window.open(bannerLink, '_system', 'location=yes');
+        return false;
+    };
+}]);
 
 app.controller('Controller', ['$scope', '$ionicPopup', '$state', '$http', function($scope, $location, $state, $ionicPopup, $timeout, $http){
   $scope.controller = {};
@@ -415,6 +424,7 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
         console.log("no user");
     }
 
+    $scope.bannerLink = bannerLink;
     $scope.loading = true;
     $scope.videosAvailable = true;
     $scope.votingLoading = false;
@@ -525,10 +535,11 @@ app.controller('CurrentCtrl', [ '$scope', '$http', 'UserDetails', '$state', 'Cur
     //$filter('orderBy')($scope.currentVideos, -votes);
 
     $scope.currentCtrl.goToVideo = function(video) {
-        CurrentVideo.set(video.id);
-        console.log(CurrentVideo.id);
-        $state.go('votingMenu.single', {videoId: video.id});
-
+        if (video.id != null) {
+            CurrentVideo.set(video.id);
+            console.log(CurrentVideo.id);
+            $state.go('votingMenu.single', {videoId: video.id});
+        }
     }
 
     $scope.doRefresh = function() {
@@ -551,7 +562,7 @@ app.controller('viewVideoCtrl', ['$scope', 'CurrentVideo', function($scope, Curr
     $scope.videoId = CurrentVideo.id;
 }]);
 
-app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', function($scope, UserDetails, $state, $http){
+app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', 'CurrentVideo', function($scope, UserDetails, $state, $http, CurrentVideo){
     if (!UserDetails.hasUser()) {
         $state.go('SignIn');
         console.log("no user");
@@ -632,6 +643,15 @@ app.controller('PreviousCtrl', ['$scope', 'UserDetails', '$state', '$http', func
         }
 
     }
+
+    $scope.previousCtrl.goToVideo = function(video) {
+        if (video.id != null) {
+            CurrentVideo.set(video.id);
+            console.log(CurrentVideo.id);
+            $state.go('votingMenu.single', {videoId: video.id});
+        }
+    }
+
     $scope.previousCtrl.getDetails();
 }]);
 
