@@ -3,12 +3,6 @@
 :-ms-input-placeholder { text-align: center; } /* ie */
 input:-moz-placeholder { text-align: center; }
 
-/* Contact TEMPO message placeholder should be aligned left, but it's not working */
-input.textBox::-webkit-input-placeholder { text-align: left; }
-input.textBox::-moz-placeholder { text-align: left; } /* firefox 19+ */
-input.textBox:-ms-input-placeholder { text-align: left; } /* ie */
-input.textBox:-moz-placeholder { text-align: left; }
-
 .dropDown * {
     width: 100%;
     margin-right: 14px;
@@ -139,13 +133,6 @@ body.keyboard-open .has-footer{
     top: 50%;
     margin-left: -120px;
     margin-top: -22px;
-}
-
-img.banner {
-   /* background: url('/img/ad-banner.png') no-repeat center;
-    width: 100%;
-    height: 100%; */
-
 }
 
 
